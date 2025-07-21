@@ -15,6 +15,7 @@ export default function OrganizationSelector({
   onChange?: (val: OrganizationValue) => void;
 }) {
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
   const { data: options = [], isLoading } = useOrganizations(search);
 
   const duplicate = search
@@ -42,7 +43,9 @@ export default function OrganizationSelector({
         options={options.map((o) => ({ value: o.id, label: o.name }))}
         style={{ width: "100%" }}
         placeholder="Rechercher ou créer…"
-        dropdownRender={(menu) => (
+        open={open || !!search}
+        onDropdownVisibleChange={setOpen}
+        popupRender={(menu) => (
           <>
             {menu}
             {search && !duplicate && (
