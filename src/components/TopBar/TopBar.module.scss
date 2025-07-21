@@ -1,0 +1,170 @@
+// components/TopBar/TopBar.module.scss
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+  height: 64px;
+
+  /* --- Léger fond “frost” --- */
+  background: rgba(255, 255, 255, 0.6);  /* ultra-léger */
+  backdrop-filter: blur(6px);            /* léger flou verre dépoli */
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  font-family: var(--font-display);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo {
+  position: relative;
+  width: 120px;
+  height: 32px;
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+
+  a {
+    text-decoration: none;
+    color: var(--color-text);
+    font-weight: 500;
+    position: relative;
+    padding: 4px;
+
+    &:hover {
+      color: var(--color-primary);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      height: 2px;
+      width: 0;
+      background-color: var(--color-primary);
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.icon {
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    color: white;
+  }
+}
+
+/* ----- Burger icon (caché desktop) ----- */
+.burger {
+  display: none;          /* desktop */
+  font-size: 22px;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+/* ----- Drawer menu nav ----- */
+.drawerNav {
+  display: flex;
+  flex-direction: column;
+
+  a {
+    padding: 1rem 1.5rem;
+    color: var(--color-text);
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.03);
+      color: var(--color-primary);
+    }
+  }
+}
+
+/* ===== Responsive < 768 px ===== */
+@media (max-width: 768px) {
+  .nav { display: none !important; }        /* cache le menu desktop   */
+  .burger { display: block; }    /* affiche le burger       */
+
+  .right { gap: 0.75rem; }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 1rem;
+  }
+
+  .left {
+    gap: 1rem;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .logo {
+    width: 96px;
+    height: 28px;
+  }
+
+  .right {
+    gap: 1rem;
+  }
+
+  .icon {
+    font-size: 18px;
+  }
+
+  .avatar {
+    width: 28px;
+    height: 28px;
+  }
+}

@@ -1,0 +1,68 @@
+/* ───────── Drawer Shell ───────── */
+.drawer .ant-drawer-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ───────── Conteneur ───────── */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px clamp(16px, 4vw, 64px);
+  gap: 24px;
+}
+
+/* ───────── Zone scrollable ───────── */
+.formWrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* ───────── Éditeur Tiptap ───────── */
+.tiptapEditor {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 200px;
+  background: #fff;
+  font-size: 15px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
+  .ProseMirror {
+    outline: none;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Focus */
+  &:focus-within {
+    border-color: #4096ff;
+    box-shadow: 0 0 0 2px rgba(64, 150, 255, 0.2);
+  }
+
+  /* Placeholder */
+  .ProseMirror:empty::before {
+    content: "Décrivez votre échange…";
+    color: #999;
+    font-style: italic;
+  }
+}
+
+/* ───────── Récapitulatif titre ───────── */
+.recapTitle {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* ───────── Footer Boutons ───────── */
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}

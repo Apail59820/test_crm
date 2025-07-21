@@ -1,0 +1,34 @@
+/* 1) Polices (Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+/* 2) Design tokens – adaptables  */
+:root {
+    /* Couleurs primaires */
+    --color-primary: #005BAA;        /* bleu Projex */
+    --color-primary-hover: #004990;
+    --color-accent: #FF6E40;         /* point d’accroche orange */
+
+    /* Neutres */
+    --color-bg: #FFFFFF;
+    --color-text: #2E3A46;
+    --color-border: #E6E9ED;
+
+    /* États */
+    --color-success: #68BC45;
+    --color-error:   #D6483C;
+    --color-warning: #F9C65F;
+
+    /* Typos */
+    --font-display: 'Montserrat', sans-serif;
+    --font-body:    'Inter',      sans-serif;
+}
+
+/* 3) Normalisation rapide */
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}

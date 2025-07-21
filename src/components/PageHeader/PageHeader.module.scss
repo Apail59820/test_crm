@@ -1,0 +1,18 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 28px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--text-secondary-color, #777);
+  font-size: 16px;
+}
