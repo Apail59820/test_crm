@@ -31,7 +31,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     (async () => {
       try {
         const me = await directus.request(readMe());
-        setUser(me);
+        setUser(me as never);
       } catch {
         setUser(null);
       } finally {
@@ -40,12 +40,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
     })();
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) : Promise<never> => {
     await directus.login(email, password);
     const me = await directus.request(readMe());
 
-    setUser(me);
-    return me;
+    setUser(me as never);
+    return me as never;
   }, []);
 
   const logout = useCallback(async () => {
