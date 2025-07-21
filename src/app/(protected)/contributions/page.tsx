@@ -41,7 +41,7 @@ export default function ContributionsPage() {
 
       <ContributionDrawer
         open={Boolean(selected)}
-        data={selected as never ?? undefined}
+        data={selected ?? undefined}
         onClose={() => setSelected(null)}
       />
 
