@@ -20,7 +20,7 @@ type Props = {
   open: boolean;
   onClose: () => void;
   data?: Contribution & {
-    contactName: string;
+    contactName?: string;
     contactRole?: string;
     contactType?: string;
     rdvDate?: string;

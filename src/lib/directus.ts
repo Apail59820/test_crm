@@ -5,7 +5,7 @@ import type { AuthenticationData } from "@directus/sdk";
 import type { ApiCollections } from "../../models/types";
 
 const browserStorage: {
-  set(data): Promise<void>;
+  set(data: AuthenticationData | null): Promise<void>;
   get(): Promise<AuthenticationData | null>;
   delete(): Promise<void>;
 } = {
@@ -13,7 +13,7 @@ const browserStorage: {
     const raw = window.localStorage.getItem("directus_auth");
     return raw ? (JSON.parse(raw) as AuthenticationData) : null;
   },
-  async set(data) {
+  async set(data: AuthenticationData | null) {
     window.localStorage.setItem("directus_auth", JSON.stringify(data));
   },
   async delete() {

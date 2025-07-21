@@ -9,9 +9,10 @@ import {
   PropsWithChildren,
 } from "react";
 import { directus } from "./directus";
-import { readMe } from "@directus/sdk";
+import { readMe, type DirectusUser } from "@directus/sdk";
+import type { ApiCollections } from "../../models/types";
 
-export type Me = Awaited<ReturnType<typeof directus.request<typeof readMe>>>;
+export type Me = DirectusUser<ApiCollections>;
 
 interface AuthValue {
   user: Me | null;
@@ -30,8 +31,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     (async () => {
       try {
-        const me = await directus.request(readMe());
-        setUser(me as never);
+        const me = await directus.request<Me>(readMe());
+        setUser(me);
       } catch {
         setUser(null);
       } finally {
@@ -40,12 +41,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
     })();
   }, []);
 
-  const login = useCallback(async (email: string, password: string) : Promise<never> => {
+  const login = useCallback(async (email: string, password: string): Promise<Me> => {
     await directus.login(email, password);
-    const me = await directus.request(readMe());
+    const me = await directus.request<Me>(readMe());
 
-    setUser(me as never);
-    return me as never;
+    setUser(me);
+    return me;
   }, []);
 
   const logout = useCallback(async () => {
