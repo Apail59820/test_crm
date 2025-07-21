@@ -18,16 +18,14 @@ export function PageHeader({ title, subtitle }: Props) {
       transition={{ duration: 0.4 }}
       className={styles.header}
     >
-      <div className={styles.header}>
-        <Typography.Title level={2} className={styles.title}>
-          {title}
-        </Typography.Title>
-        {subtitle && (
-          <Typography.Paragraph className={styles.subtitle}>
-            {subtitle}
-          </Typography.Paragraph>
-        )}
-      </div>
+      <Typography.Title level={2} className={styles.title}>
+        {title}
+      </Typography.Title>
+      {subtitle && (
+        <Typography.Paragraph className={styles.subtitle}>
+          {subtitle}
+        </Typography.Paragraph>
+      )}
     </motion.div>
   );
 }

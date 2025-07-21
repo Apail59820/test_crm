@@ -41,7 +41,7 @@ const sectors = [
 type Props = {
   open: boolean;
   onClose: () => void;
-  onSubmit?: (values: any) => void;
+  onSubmit?: (values: Record<string, unknown>) => void;
 };
 
 /* ────────────────────────────────────────────────────────── */
@@ -54,12 +54,12 @@ const FontSize = Extension.create({
   addGlobalAttributes() {
     return [
       {
-        types: (this as any).options.types,
+        types: this.options.types,
         attributes: {
           fontSize: {
             default: null,
-            renderHTML: (attrs: any) =>
-              attrs.fontSize ? { style: `font-size:${attrs.fontSize}` } : {},
+            renderHTML: ({ fontSize }: { fontSize: string }) =>
+              fontSize ? { style: `font-size:${fontSize}` } : {},
             parseHTML: (el: HTMLElement) => ({
               fontSize: el.style.fontSize || null,
             }),
@@ -155,17 +155,16 @@ export default function NewContributionDrawer({
             initialValues={{ visibility: "PUBLIC", summary: "" }}
           >
             {/* ────── Étape 0 ────── */}
-            {current === 0 &&
-              ((
-                <>
-                  <Form.Item
-                    preserve={false}
-                    label="Nom de l’entreprise / collectivité"
-                    name="title"
-                    rules={[{ required: true, message: "Champ requis" }]}
-                  >
-                    <Input placeholder="Ex : Mairie de Nantes" />
-                  </Form.Item>
+            {current === 0 && (
+              <>
+                <Form.Item
+                  preserve={false}
+                  label="Nom de l’entreprise / collectivité"
+                  name="title"
+                  rules={[{ required: true, message: "Champ requis" }]}
+                >
+                  <Input placeholder="Ex : Mairie de Nantes" />
+                </Form.Item>
 
                   <Space direction="horizontal" size="large" wrap>
                     <Form.Item
@@ -197,16 +196,15 @@ export default function NewContributionDrawer({
                         ].map((t) => ({ value: t, label: t }))}
                         style={{ minWidth: 200 }}
                       />
-                    </Form.Item>
-                  </Space>
-                </>
-              ) as any)}
+                </Form.Item>
+              </Space>
+              </>
+            )}
 
             {/* ────── Étape 1 ────── */}
-            {current === 1 &&
-              ((
-                <>
-                  <TiptapMenuBar editor={editor} />
+            {current === 1 && (
+              <>
+                <TiptapMenuBar editor={editor} />
 
                   <Form.Item
                     preserve={false}
@@ -216,12 +214,11 @@ export default function NewContributionDrawer({
                       { required: true, message: "Écrivez un compte-rendu" },
                     ]}
                   >
-                    {editor &&
-                      ((
-                        <div className={styles.tiptapEditor}>
-                          <EditorContent editor={editor} />
-                        </div>
-                      ) as any)}
+                    {editor && (
+                      <div className={styles.tiptapEditor}>
+                        <EditorContent editor={editor} />
+                      </div>
+                    )}
                   </Form.Item>
 
                   <Form.Item
@@ -241,14 +238,13 @@ export default function NewContributionDrawer({
                     />
                   </Form.Item>
                 </>
-              ) as any)}
+            )}
 
             {/* ────── Étape 2 ────── */}
-            {current === 2 &&
-              ((
-                <>
-                  <Divider />
-                  <p className={styles.recapTitle}>Récapitulatif rapide</p>
+            {current === 2 && (
+              <>
+                <Divider />
+                <p className={styles.recapTitle}>Récapitulatif rapide</p>
                   <Form.Item
                     preserve={false}
                     name="visibility"
@@ -263,7 +259,7 @@ export default function NewContributionDrawer({
                     />
                   </Form.Item>
                 </>
-              ) as any)}
+            )}
           </Form>
         </div>
 

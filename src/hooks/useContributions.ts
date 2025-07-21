@@ -1,13 +1,5 @@
 import { useMemo } from "react";
-
-export type Contribution = {
-  id: string;
-  title: string;
-  sector: string;
-  author: string;
-  visibility: "PUBLIC" | "PRIVATE" | "ARCHIVED";
-  createdAt: string;
-};
+import type { Contribution } from "@/types/contribution";
 
 export function useContributions() {
   const data: Contribution[] = useMemo(
