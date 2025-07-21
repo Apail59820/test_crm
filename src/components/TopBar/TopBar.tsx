@@ -48,7 +48,9 @@ const TopBar = () => {
       {/* ── Col gauche ───────────────────────── */}
       <div className={styles.left}>
         <div className={styles.logo}>
-          <Image src="/logo.png" alt="Logo" fill priority />
+          <Image src="/logo.png" alt="Logo" fill priority onClick={() => {
+            router.replace("/");
+          }}/>
         </div>
 
         {/* Menu desktop uniquement */}

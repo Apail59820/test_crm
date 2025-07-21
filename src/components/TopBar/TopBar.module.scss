@@ -31,6 +31,10 @@
   position: relative;
   width: 120px;
   height: 32px;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .nav {
