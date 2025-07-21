@@ -37,14 +37,12 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const me = (await login(email, password)) as {
-        first_name: string;
-        last_name: string;
-        email: string;
-      };
+      const me = await login(email, password);
+      const user = me as { first_name?: string; last_name?: string; email?: string };
 
       const fullName =
-        [me.first_name, me.last_name].filter(Boolean).join(" ") || me.email;
+        [user.first_name, user.last_name].filter(Boolean).join(" ") ||
+        user.email || "";
 
       message.success(`Bienvenue ${fullName} !`);
 

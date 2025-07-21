@@ -2,6 +2,7 @@
 import { createDirectus, rest, authentication } from "@directus/sdk";
 
 import type { AuthenticationData } from "@directus/sdk";
+import type { ApiCollections } from "../../models/types";
 
 const browserStorage: {
   set(data): Promise<void>;
@@ -19,7 +20,9 @@ const browserStorage: {
     window.localStorage.removeItem("directus_auth");
   },
 };
-export const directus = createDirectus(process.env.NEXT_PUBLIC_DIRECTUS_URL!)
+export const directus = createDirectus<ApiCollections>(
+  process.env.NEXT_PUBLIC_DIRECTUS_URL!,
+)
   .with(rest())
   .with(
     authentication("json", {
