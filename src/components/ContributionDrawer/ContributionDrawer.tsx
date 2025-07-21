@@ -14,23 +14,25 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import styles from "./ContributionDrawer.module.scss";
 
+import type { Contribution, Visibility } from "@/types/contribution";
+
 type Props = {
   open: boolean;
   onClose: () => void;
-  data: {
-    id: string;
-    title: string;
-    sector: string;
-    author: string;
+  data?: Contribution & {
     contactName: string;
     contactRole?: string;
     contactType?: string;
     rdvDate?: string;
-    createdAt: string;
     summary?: string;
     qualification?: string;
-    visibility: "PUBLIC" | "PRIVATE" | "ARCHIVED";
   };
+};
+
+const visibilityColor: Record<Visibility, string> = {
+  PUBLIC: "green",
+  PRIVATE: "orange",
+  ARCHIVED: "red",
 };
 
 export default function ContributionDrawer({ open, onClose, data }: Props) {
@@ -61,7 +63,7 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
           <Space>
             <Tooltip title="Modifier">
               <Button
-                icon={(<EditOutlined />) as any}
+                icon={<EditOutlined />}
                 type="default"
                 size="small"
                 onClick={() => console.log("open edit")}
@@ -69,7 +71,7 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
             </Tooltip>
             <Tooltip title="Archiver">
               <Button
-                icon={(<DeleteOutlined />) as any}
+                icon={<DeleteOutlined />}
                 type="text"
                 danger
                 size="small"
@@ -106,17 +108,7 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
           </Descriptions.Item>
           <Descriptions.Item label="Créée par">{data.author}</Descriptions.Item>
           <Descriptions.Item label="Visibilité">
-            <Tag
-              color={
-                data.visibility === "PUBLIC"
-                  ? "green"
-                  : data.visibility === "PRIVATE"
-                    ? "orange"
-                    : "red"
-              }
-            >
-              {data.visibility}
-            </Tag>
+            <Tag color={visibilityColor[data.visibility]}>{data.visibility}</Tag>
           </Descriptions.Item>
         </Descriptions>
 

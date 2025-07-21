@@ -1,4 +1,3 @@
-// app/contributions/components/ContributionCardV2.tsx
 "use client";
 
 import { Avatar, Badge, Tag, Tooltip, Typography } from "antd";
@@ -9,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import styles from "./ContributionCard.module.scss";
+import type { Visibility } from "@/types/contribution";
 
 type Props = {
   title: string;
@@ -21,7 +21,7 @@ type Props = {
   rdvDate?: string;
   summary?: string;
   qualification?: string;
-  visibility: "PUBLIC" | "PRIVATE" | "ARCHIVED";
+  visibility: Visibility;
   remindAt?: string;
   onClick?: () => void;
 };
@@ -41,7 +41,7 @@ export default function ContributionCard({
   remindAt,
   onClick,
 }: Props) {
-  const colorMap = {
+  const colorMap: Record<Visibility, string> = {
     PUBLIC: "green",
     PRIVATE: "orange",
     ARCHIVED: "red",
@@ -104,7 +104,7 @@ export default function ContributionCard({
 
         <div className={styles.metaRow}>
           <div className={styles.contactInfo}>
-            <Avatar icon={(<UserOutlined />) as any} size="small" />
+            <Avatar icon={<UserOutlined />} size="small" />
             <Typography.Text className={styles.contactText}>
               {contactName}
               {contactRole ? ` (${contactRole})` : ""}
