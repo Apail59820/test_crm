@@ -4,11 +4,11 @@ import {
   Drawer,
   Steps,
   Form,
-  Input,
   Select,
   Button,
   Space,
   Divider,
+  App,
 } from "antd";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -23,6 +23,10 @@ import Color from "@tiptap/extension-color";
 import { Extension } from "@tiptap/core";
 
 import TiptapMenuBar from "@/components/TipTapMenuBar/TipTapMenuBar";
+import OrganizationSelector, {
+  type OrganizationValue,
+} from "@/components/OrganizationSelector/OrganizationSelector";
+import { useCreateContribution } from "@/hooks/useCreateContribution";
 
 const { Step } = Steps;
 
@@ -80,6 +84,9 @@ export default function NewContributionDrawer({
 }: Props) {
   const [current, setCurrent] = useState(0);
   const [form] = Form.useForm();
+  const [organization, setOrganization] = useState<OrganizationValue>();
+  const { message } = App.useApp();
+  const createMutation = useCreateContribution();
 
   /* ────── TIPTAP EDITOR ────── */
   const editor = useEditor({
@@ -111,12 +118,30 @@ export default function NewContributionDrawer({
 
   const finish = async () => {
     const values = await form.validateFields();
+    if (!organization) {
+      message.error("Client requis");
+      return;
+    }
+
+    await createMutation.mutateAsync({
+      organization: organization.id,
+      organizationName: organization.name,
+      sector: values.sector,
+      contactType: values.contactType,
+      qualification: values.qualification,
+      visibility: values.visibility,
+      summary: editor?.getHTML() || "",
+    });
+
     onSubmit?.({
+      organization,
       ...values,
       summary: editor?.getHTML() || "",
     });
+
     form.resetFields();
     setCurrent(0);
+    setOrganization(undefined);
     editor?.commands.setContent("");
     onClose();
   };
@@ -159,12 +184,13 @@ export default function NewContributionDrawer({
             {current === 0 && (
               <>
                 <Form.Item
-                  preserve={false}
                   label="Nom de l’entreprise / collectivité"
-                  name="title"
-                  rules={[{ required: true, message: "Champ requis" }]}
+                  required
                 >
-                  <Input placeholder="Ex : Mairie de Nantes" />
+                  <OrganizationSelector
+                    value={organization}
+                    onChange={setOrganization}
+                  />
                 </Form.Item>
 
                   <Space direction="horizontal" size="large" wrap>

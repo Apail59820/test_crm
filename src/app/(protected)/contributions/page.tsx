@@ -25,7 +25,11 @@ export default function ContributionsPage() {
       />
 
       <div className={styles.content}>
-        <ContributionTabs activeTab={activeTab} onChangeTab={setActiveTab} />
+        <ContributionTabs
+          activeTab={activeTab}
+          onChangeTab={setActiveTab}
+          onCreate={() => setFormOpen(true)}
+        />
 
         <div className={styles.listWrapper}>
           <ContributionsList tab={activeTab} onSelect={setSelected} />
@@ -48,10 +52,7 @@ export default function ContributionsPage() {
       <NewContributionDrawer
         open={formOpen}
         onClose={() => setFormOpen(false)}
-        onSubmit={(values) => {
-          console.log("POST vers API", values);
-          // TODO: refetch SWR
-        }}
+        onSubmit={() => setFormOpen(false)}
       />
     </div>
   );

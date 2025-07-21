@@ -7,9 +7,10 @@ import styles from "./ContributionTabs.module.scss";
 type Props = {
   activeTab: "all" | "mine" | "public";
   onChangeTab: (key: "all" | "mine" | "public") => void;
+  onCreate?: () => void;
 };
 
-export default function ContributionTabs({ activeTab, onChangeTab }: Props) {
+export default function ContributionTabs({ activeTab, onChangeTab, onCreate }: Props) {
   return (
     <div className={styles.wrapper}>
       <Tabs
@@ -25,7 +26,7 @@ export default function ContributionTabs({ activeTab, onChangeTab }: Props) {
       <Button
         type="primary"
         icon={<PlusOutlined />}
-        onClick={() => console.log("ouvrir modal")}
+        onClick={onCreate}
         className={styles.createButton}
       >
         Nouvelle contribution
