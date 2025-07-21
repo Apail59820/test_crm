@@ -10,7 +10,7 @@ import {
   Divider,
   App,
 } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import styles from "./NewContributionDrawer.module.scss";
 
@@ -20,6 +20,7 @@ import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
 import { Extension } from "@tiptap/core";
 
 import TiptapMenuBar from "@/components/TipTapMenuBar/TipTapMenuBar";
@@ -96,6 +97,7 @@ export default function NewContributionDrawer({
       Link.configure({ openOnClick: false }),
       TextStyle,
       Color,
+      Highlight,
       FontSize,
     ],
     content: "",
@@ -104,11 +106,28 @@ export default function NewContributionDrawer({
     },
   });
 
+  useEffect(() => {
+    if (!editor) return;
+    const handler = () => {
+      form.setFieldValue("summary", editor.getHTML());
+    };
+    editor.on("update", handler);
+    return () => {
+      editor.off("update", handler);
+    };
+  }, [editor, form]);
+
   /* ────── Navigation Wizard ────── */
   const next = () => {
     form
       .validateFields()
-      .then(() => setCurrent((c) => c + 1))
+      .then(() => {
+        if (current === 0 && !organization) {
+          message.error("Client requis");
+          return;
+        }
+        setCurrent((c) => c + 1);
+      })
       .catch(() => {
         /* AntD affiche déjà les erreurs */
       });
