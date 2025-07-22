@@ -6,7 +6,6 @@ import type { Contribution } from "@/types/contribution";
 import type { Filters } from "@/components/ContributionsFilters/ContributionsFilters";
 
 import ContributionCard from "@/components/ContributionCard/ContributionCard";
-import { useEffect } from "react";
 
 type Props = {
   tab: "all" | "mine" | "public";
@@ -19,9 +18,6 @@ type Props = {
 export default function ContributionsList({ tab, filters, page, onPageChange, onSelect }: Props) {
   const { data } = useContributions(tab, { ...filters, page });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
   return (
     <List
       grid={{ gutter: 16, column: 1 }}

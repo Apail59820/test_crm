@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./ContributionDrawer.module.scss";
 
 import type { Contribution, Visibility } from "@/types/contribution";
@@ -45,6 +45,10 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
       setLoading(false);
     }, 1000);
   };
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   if (!data) return <Drawer open={open} onClose={onClose} />;
 
@@ -92,10 +96,10 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
         >
           <Descriptions.Item label="Secteur">{data.sector}</Descriptions.Item>
           <Descriptions.Item label="Type de contact">
-            {data.contactType || "—"}
+            {data.client?.type || "—"}
           </Descriptions.Item>
           <Descriptions.Item label="Nom du contact">
-            {data.contactName} {data.contactRole && `(${data.contactRole})`}
+            {data.client?.name} {data.client?.name && `(${data.client?.function})`}
           </Descriptions.Item>
           <Descriptions.Item label="Qualification du projet">
             {data.qualification || "Non précisé"}

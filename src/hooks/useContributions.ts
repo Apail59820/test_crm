@@ -65,7 +65,7 @@ export function useContributions(
 
         if (visibility) {
           if (visibility === "ARCHIVED") {
-            filter["status.label"] = { _eq: "ARCHIVED" };
+            filter["status"] = { label: { _eq: "ARCHIVED" } };
           } else {
             filter.is_public = { _eq: visibility === "PUBLIC" };
           }
