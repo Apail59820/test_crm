@@ -38,11 +38,11 @@ export default function ContributionsList({ tab, filters, page, onPageChange, on
           title={item.title}
           sector={item.sector}
           author={item.author}
-          contactName="Julien Leclercq"
-          contactRole="Directeur général"
-          contactType="Prospect"
+          contactName={item?.client?.name}
+          contactRole={item?.client?.function}
+          contactType={item?.client.type}
           summary="Un projet de restructuration important sur le campus Est. À relancer en septembre."
-          qualification="Projet lancé"
+          qualification={item?.qualification}
           rdvDate="2025-06-27"
           createdAt={item.createdAt}
           visibility={item.visibility}
