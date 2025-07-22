@@ -6,7 +6,6 @@ import {
   Form,
   Select,
   Button,
-  Space,
   Divider,
   App,
   Input,
@@ -34,8 +33,21 @@ import { useOrigins } from "@/hooks/useOrigins";
 import { useContactQualifs } from "@/hooks/useContactQualifs";
 import { useProjectQualifs } from "@/hooks/useProjectQualifs";
 
-const { Step } = Steps;
+import {
+  Building2,
+  Landmark,
+  Network,
+  User,
+  Users,
+  Briefcase,
+  Star,
+  Mail,
+  Phone,
+  MapPin,
+  Eye,
+} from "lucide-react";
 
+const { Step } = Steps;
 
 type Props = {
   open: boolean;
@@ -43,8 +55,6 @@ type Props = {
   onSubmit?: (values: Record<string, unknown>) => void;
 };
 
-/* ────────────────────────────────────────────────────────── */
-/* Extension custom FontSize                                 */
 const FontSize = Extension.create({
   name: "fontSize",
   addOptions() {
@@ -65,18 +75,15 @@ const FontSize = Extension.create({
           },
         },
       },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any;
   },
 });
 
-/* ────────────────────────────────────────────────────────── */
-/* Composant principal                                       */
 export default function NewContributionDrawer({
-  open,
-  onClose,
-  onSubmit,
-}: Props) {
+                                                open,
+                                                onClose,
+                                                onSubmit,
+                                              }: Props) {
   const [current, setCurrent] = useState(0);
   const [maxStep, setMaxStep] = useState(0);
   const [form] = Form.useForm();
@@ -88,7 +95,6 @@ export default function NewContributionDrawer({
   const { data: contactQualifs = [] } = useContactQualifs();
   const { data: projectQualifs = [] } = useProjectQualifs();
 
-  /* ────── TIPTAP EDITOR ────── */
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -116,7 +122,6 @@ export default function NewContributionDrawer({
     };
   }, [editor, form]);
 
-  /* ────── Navigation Wizard ────── */
   const next = () => {
     form
       .validateFields()
@@ -131,9 +136,7 @@ export default function NewContributionDrawer({
           return nextStep;
         });
       })
-      .catch(() => {
-        /* AntD affiche déjà les erreurs */
-      });
+      .catch(() => {});
   };
 
   const prev = () => setCurrent((c) => Math.max(c - 1, 0));
@@ -149,7 +152,6 @@ export default function NewContributionDrawer({
 
   const finish = async () => {
     await form.validateFields();
-
     const values = form.getFieldsValue(true);
 
     if (!organization) {
@@ -187,7 +189,6 @@ export default function NewContributionDrawer({
     onClose();
   };
 
-  /* ────── Rendu ────── */
   return (
     <Drawer
       open={open}
@@ -202,7 +203,6 @@ export default function NewContributionDrawer({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        {/* STEPPER */}
         <Steps
           className={styles.steps}
           current={current}
@@ -216,173 +216,183 @@ export default function NewContributionDrawer({
           <Step title="Validation" />
         </Steps>
 
-        {/* FORMULAIRE */}
         <div className={styles.formWrapper}>
           <Form
             form={form}
             layout="vertical"
             initialValues={{ visibility: "PUBLIC", summary: "" }}
           >
-            {/* ────── Étape 0 ────── */}
             {current === 0 && (
-              <>
-                <Form.Item
-                  label="Nom de l’entreprise / collectivité"
-                  required
-                >
-                  <OrganizationSelector
-                    value={organization}
-                    onChange={setOrganization}
-                  />
-                </Form.Item>
-
-                <Space direction="horizontal" size="large" wrap>
+              <div className={styles.stepWrapper}>
+                <section className={styles.block}>
+                  <h3 className={styles.blockTitle}>Organisation</h3>
                   <Form.Item
-                    label="Secteur d’activité"
-                    name="sector"
-                    rules={[{ required: true }]}
+                    label={
+                      <span>
+                        <Building2 className={styles.icon} /> Nom de l’entreprise / collectivité
+                      </span>
+                    }
+                    required
                   >
-                    <Select
-                      placeholder="Choisir…"
-                      options={sectors.map((s) => ({ value: s.id, label: s.label }))}
-                      style={{ minWidth: 200 }}
+                    <OrganizationSelector
+                      value={organization}
+                      onChange={setOrganization}
                     />
                   </Form.Item>
 
-                  <Form.Item
-                    label="Origine du contact"
-                    name="contactOrigin"
-                    rules={[{ required: true }]}
-                  >
-                    <Select
-                      placeholder="Prospect, Client…"
-                      options={origins.map((o) => ({ value: o.id, label: o.label }))}
-                      style={{ minWidth: 200 }}
-                    />
-                  </Form.Item>
-                </Space>
+                  <div className={styles.grid}>
+                    <Form.Item
+                      label={<span><Landmark className={styles.icon} /> Secteur d’activité</span>}
+                      name="sector"
+                      rules={[{ required: true }]}
+                    >
+                      <Select
+                        placeholder="Choisir…"
+                        options={sectors.map((s) => ({
+                          value: s.id,
+                          label: s.label,
+                        }))}
+                      />
+                    </Form.Item>
 
-                <Space direction="horizontal" size="large" wrap>
-                  <Form.Item
-                    label="Prénom"
-                    name="firstName"
-                    rules={[{ required: true }]}
-                  >
-                    <Input style={{ minWidth: 160 }} />
-                  </Form.Item>
+                    <Form.Item
+                      label={<span><Network className={styles.icon} /> Origine du contact</span>}
+                      name="contactOrigin"
+                      rules={[{ required: true }]}
+                    >
+                      <Select
+                        placeholder="Comment le contact a été initié"
+                        options={origins.map((o) => ({
+                          value: o.id,
+                          label: o.label,
+                        }))}
+                      />
+                    </Form.Item>
+                  </div>
+                </section>
 
-                  <Form.Item
-                    label="Nom"
-                    name="lastName"
-                    rules={[{ required: true }]}
-                  >
-                    <Input style={{ minWidth: 160 }} />
-                  </Form.Item>
-                </Space>
+                <section className={styles.block}>
+                  <h3 className={styles.blockTitle}>Contact principal</h3>
+                  <div className={styles.grid}>
+                    <Form.Item
+                      label={<span><User className={styles.icon} /> Prénom</span>}
+                      name="firstName"
+                      rules={[{ required: true }]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-                <Space direction="horizontal" size="large" wrap>
-                  <Form.Item
-                    label="Fonction"
-                    name="position"
-                    rules={[{ required: true }]}
-                  >
-                    <Input style={{ minWidth: 160 }} />
-                  </Form.Item>
+                    <Form.Item
+                      label={<span><Users className={styles.icon} /> Nom</span>}
+                      name="lastName"
+                      rules={[{ required: true }]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-                  <Form.Item
-                    label="Qualification"
-                    name="contactQualification"
-                    rules={[{ required: true }]}
-                  >
-                    <Select
-                      placeholder="Sélectionner…"
-                      options={contactQualifs.map((q) => ({ value: q.id, label: q.label }))}
-                      style={{ minWidth: 160 }}
-                    />
-                  </Form.Item>
-                </Space>
+                    <Form.Item
+                      label={<span><Briefcase className={styles.icon} /> Fonction</span>}
+                      name="position"
+                      rules={[{ required: true }]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-                <Space direction="horizontal" size="large" wrap>
-                  <Form.Item
-                    label="Email"
-                    name="email"
-                    rules={[{ required: true, type: "email" }]}
-                  >
-                    <Input style={{ minWidth: 200 }} />
-                  </Form.Item>
+                    <Form.Item
+                      label={<span><Star className={styles.icon} /> Qualification</span>}
+                      name="contactQualification"
+                      rules={[{ required: true }]}
+                    >
+                      <Select
+                        placeholder="Niveau de qualification"
+                        options={contactQualifs.map((q) => ({
+                          value: q.id,
+                          label: q.label,
+                        }))}
+                      />
+                    </Form.Item>
+                  </div>
 
-                  <Form.Item
-                    label="Téléphone"
-                    name="phone"
-                    rules={[{ required: true }]}
-                  >
-                    <Input style={{ minWidth: 160 }} />
-                  </Form.Item>
+                  <div className={styles.grid}>
+                    <Form.Item
+                      label={<span><Mail className={styles.icon} /> Email</span>}
+                      name="email"
+                      rules={[{ required: true, type: "email" }]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-                  <Form.Item
-                    label="Région"
-                    name="region"
-                    rules={[{ required: true }]}
-                  >
-                    <Input style={{ minWidth: 120 }} />
-                  </Form.Item>
-                </Space>
-              </>
+                    <Form.Item
+                      label={<span><Phone className={styles.icon} /> Téléphone</span>}
+                      name="phone"
+                      rules={[{ required: true }]}
+                    >
+                      <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                      label={<span><MapPin className={styles.icon} /> Région</span>}
+                      name="region"
+                      rules={[{ required: true }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </div>
+                </section>
+              </div>
             )}
 
-            {/* ────── Étape 1 ────── */}
             {current === 1 && (
               <>
                 <TiptapMenuBar editor={editor} />
 
-                  <Form.Item
-                    label="Compte-rendu"
-                    rules={[
-                      { required: true, message: "Écrivez un compte-rendu" },
-                    ]}
-                  >
-                    {editor && (
-                      <div className={styles.tiptapEditor}>
-                        <EditorContent editor={editor} />
-                      </div>
-                    )}
-                  </Form.Item>
+                <Form.Item
+                  label="Compte-rendu"
+                  rules={[{ required: true, message: "Écrivez un compte-rendu" }]}
+                >
+                  {editor && (
+                    <div className={styles.tiptapEditor}>
+                      <EditorContent editor={editor} />
+                    </div>
+                  )}
+                </Form.Item>
 
-                  <Form.Item
-                    label="Qualification du projet"
-                    name="projectQualification"
-                  >
-                    <Select
-                      options={projectQualifs.map((q) => ({ value: q.id, label: q.label }))}
-                      placeholder="Sélectionner…"
-                    />
-                  </Form.Item>
-                </>
+                <Form.Item
+                  label="Qualification du projet"
+                  name="projectQualification"
+                >
+                  <Select
+                    options={projectQualifs.map((q) => ({
+                      value: q.id,
+                      label: q.label,
+                    }))}
+                    placeholder="Sélectionner…"
+                  />
+                </Form.Item>
+              </>
             )}
 
-            {/* ────── Étape 2 ────── */}
             {current === 2 && (
               <>
                 <Divider />
                 <p className={styles.recapTitle}>Récapitulatif rapide</p>
-                  <Form.Item
-                    name="visibility"
-                    label="Visibilité"
-                  >
-                    <Select
-                      options={[
-                        { value: "PUBLIC", label: "Publique" },
-                        { value: "PRIVATE", label: "Privée" },
-                      ]}
-                      style={{ maxWidth: 200 }}
-                    />
-                  </Form.Item>
-                </>
+                <Form.Item
+                  name="visibility"
+                  label={<span><Eye className={styles.icon} /> Visibilité</span>}
+                >
+                  <Select
+                    options={[
+                      { value: "PUBLIC", label: "Publique" },
+                      { value: "PRIVATE", label: "Privée" },
+                    ]}
+                    style={{ maxWidth: 200 }}
+                  />
+                </Form.Item>
+              </>
             )}
           </Form>
         </div>
 
-        {/* FOOTER ACTIONS */}
         <div className={styles.footer}>
           <Button onClick={handleClose} style={{ marginRight: "auto" }}>
             Annuler
