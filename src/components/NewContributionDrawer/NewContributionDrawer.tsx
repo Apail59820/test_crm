@@ -84,6 +84,7 @@ export default function NewContributionDrawer({
   onSubmit,
 }: Props) {
   const [current, setCurrent] = useState(0);
+  const [maxStep, setMaxStep] = useState(0);
   const [form] = Form.useForm();
   const [organization, setOrganization] = useState<OrganizationValue>();
   const { message } = App.useApp();
@@ -126,7 +127,11 @@ export default function NewContributionDrawer({
           message.error("Client requis");
           return;
         }
-        setCurrent((c) => c + 1);
+        setCurrent((c) => {
+          const nextStep = c + 1;
+          setMaxStep((m) => Math.max(m, nextStep));
+          return nextStep;
+        });
       })
       .catch(() => {
         /* AntD affiche déjà les erreurs */
@@ -134,6 +139,15 @@ export default function NewContributionDrawer({
   };
 
   const prev = () => setCurrent((c) => Math.max(c - 1, 0));
+
+  const handleClose = () => {
+    form.resetFields();
+    setCurrent(0);
+    setMaxStep(0);
+    setOrganization(undefined);
+    editor?.commands.setContent("");
+    onClose();
+  };
 
   const finish = async () => {
     const values = await form.validateFields();
@@ -169,16 +183,11 @@ export default function NewContributionDrawer({
   return (
     <Drawer
       open={open}
-      onClose={() => {
-        form.resetFields();
-        setCurrent(0);
-        editor?.commands.setContent("");
-        onClose();
-      }}
+      onClose={handleClose}
       width="100%"
       className={styles.drawer}
       destroyOnHidden
-      closable={false}
+      closable
     >
       <motion.div
         className={styles.container}
@@ -186,7 +195,14 @@ export default function NewContributionDrawer({
         animate={{ opacity: 1 }}
       >
         {/* STEPPER */}
-        <Steps current={current} responsive>
+        <Steps
+          className={styles.steps}
+          current={current}
+          responsive
+          onChange={(step) => {
+            if (step <= maxStep) setCurrent(step);
+          }}
+        >
           <Step title="Entité" />
           <Step title="Compte-rendu" />
           <Step title="Validation" />
@@ -310,6 +326,9 @@ export default function NewContributionDrawer({
 
         {/* FOOTER ACTIONS */}
         <div className={styles.footer}>
+          <Button onClick={handleClose} style={{ marginRight: "auto" }}>
+            Annuler
+          </Button>
           {current > 0 && (
             <Button onClick={prev} style={{ marginRight: 8 }}>
               Précédent

@@ -3,26 +3,31 @@
 import { List } from "antd";
 import { useContributions } from "@/hooks/useContributions";
 import type { Contribution } from "@/types/contribution";
+import type { Filters } from "@/components/ContributionsFilters/ContributionsFilters";
 
 import ContributionCard from "@/components/ContributionCard/ContributionCard";
-import { useEffect } from "react";
 
 type Props = {
   tab: "all" | "mine" | "public";
+  filters: Filters;
+  page: number;
+  onPageChange: (page: number) => void;
   onSelect: (item: Contribution) => void;
 };
 
-export default function ContributionsList({ tab, onSelect }: Props) {
-  const { data, isLoading } = useContributions(tab);
+export default function ContributionsList({ tab, filters, page, onPageChange, onSelect }: Props) {
+  const { data } = useContributions(tab, { ...filters, page });
 
-  useEffect(() => {
-    console.log(data);
-    console.log(isLoading);
-  }, [data, isLoading]);
   return (
     <List
       grid={{ gutter: 16, column: 1 }}
       dataSource={data}
+      pagination={{
+        pageSize: 10,
+        current: page,
+        onChange: onPageChange,
+        hideOnSinglePage: true,
+      }}
       renderItem={(item) => (
         <ContributionCard
           key={item.id}
