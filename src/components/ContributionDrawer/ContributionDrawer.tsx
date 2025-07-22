@@ -20,11 +20,11 @@ import {
   ApartmentOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
-import { readItems, updateItem } from "@directus/sdk";
+import { App } from "antd";
 import styles from "./ContributionDrawer.module.scss";
 
 import type { Contribution, Visibility } from "@/types/contribution";
-import { directus } from "@/lib/directus";
+import { useArchiveContribution } from "@/hooks/useArchiveContribution";
 import ContributionEditDrawer from "@/components/ContributionEditDrawer/ContributionEditDrawer";
 
 const { useBreakpoint } = Grid;
@@ -36,33 +36,20 @@ const visibilityColor: Record<Visibility, string> = {
 };
 
 export default function ContributionDrawer({ open, onClose, data }: Props) {
-  const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const screens = useBreakpoint();
+  const { message } = App.useApp();
+  const archiveMutation = useArchiveContribution();
 
-  const handleDelete = () => {
+  const handleArchive = async () => {
     if (!data) return;
-    setLoading(true);
-    (async () => {
-      try {
-        const status = await directus.request<{ id: string }[]>(
-          readItems("contributions_status", {
-            fields: ["id"],
-            filter: { label: { _eq: "ARCHIVED" } },
-            limit: 1,
-          }),
-        );
-        const statusId = status[0]?.id;
-        await directus.request(
-          updateItem("contributions", data.id, { status: statusId }),
-        );
-        onClose();
-      } catch (err) {
-        console.error("archive error", err);
-      } finally {
-        setLoading(false);
-      }
-    })();
+    try {
+      await archiveMutation.mutateAsync(data.id);
+      message.success("Contribution archivée !");
+      onClose();
+    } catch {
+      message.error("Archivage impossible");
+    }
   };
 
   if (!data) return <Drawer open={open} onClose={onClose} />;
@@ -99,8 +86,8 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
                   icon={<DeleteOutlined />}
                   type="text"
                   danger
-                  loading={loading}
-                  onClick={handleDelete}
+                  loading={archiveMutation.isPending}
+                  onClick={handleArchive}
                 />
               </Tooltip>
             </Space>
