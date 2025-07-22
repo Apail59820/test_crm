@@ -1,6 +1,6 @@
 "use client";
 
-import { Select, Spin, Alert, Divider } from "antd";
+import { Select, Spin, Alert, Divider, Empty } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useOrganizations } from "@/hooks/useOrganizations";
@@ -43,7 +43,7 @@ export default function OrganizationSelector({
         }
         onSearch={handleSearch}
         filterOption={false}
-        notFoundContent={isLoading ? <Spin size="small" /> : null}
+        notFoundContent={isLoading ? <Spin size="small" /> : <Empty description={"Aucun résultat"}/>}
         onChange={(val) => {
           onChange?.({ id: val.value || undefined, name: val.label });
           setOpen(false);

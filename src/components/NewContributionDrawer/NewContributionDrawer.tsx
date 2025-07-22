@@ -177,7 +177,7 @@ export default function NewContributionDrawer({
       }}
       width="100%"
       className={styles.drawer}
-      destroyOnClose
+      destroyOnHidden
       closable={false}
     >
       <motion.div
