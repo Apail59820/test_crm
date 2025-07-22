@@ -7,11 +7,19 @@ import {
   Divider,
   Tag,
   Button,
-  Descriptions,
   Tooltip,
+  Grid,
+  Row,
+  Col,
 } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  CalendarOutlined,
+  UserOutlined,
+  ApartmentOutlined,
+} from "@ant-design/icons";
+import { useState } from "react";
 import { readItems, updateItem } from "@directus/sdk";
 import styles from "./ContributionDrawer.module.scss";
 
@@ -19,18 +27,7 @@ import type { Contribution, Visibility } from "@/types/contribution";
 import { directus } from "@/lib/directus";
 import ContributionEditDrawer from "@/components/ContributionEditDrawer/ContributionEditDrawer";
 
-type Props = {
-  open: boolean;
-  onClose: () => void;
-  data?: Contribution & {
-    contactName?: string;
-    contactRole?: string;
-    contactType?: string;
-    rdvDate?: string;
-    summary?: string;
-    qualification?: string;
-  };
-};
+const { useBreakpoint } = Grid;
 
 const visibilityColor: Record<Visibility, string> = {
   PUBLIC: "green",
@@ -41,6 +38,7 @@ const visibilityColor: Record<Visibility, string> = {
 export default function ContributionDrawer({ open, onClose, data }: Props) {
   const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
+  const screens = useBreakpoint();
 
   const handleDelete = () => {
     if (!data) return;
@@ -67,88 +65,132 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
     })();
   };
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   if (!data) return <Drawer open={open} onClose={onClose} />;
 
   return (
     <>
-    <Drawer
-      open={open}
-      onClose={onClose}
-      width={580}
-      className={styles.drawer}
-      styles={{ body: { padding: 24 } }}
-      title={
-        <div className={styles.header}>
-          <Typography.Title level={4} className={styles.title}>
-            {data.title}
-          </Typography.Title>
-          <Space>
-            <Tooltip title="Modifier">
-              <Button
-                icon={<EditOutlined />}
-                type="default"
-                size="small"
-                onClick={() => setEdit(true)}
-              />
-            </Tooltip>
-            <Tooltip title="Archiver">
-              <Button
-                icon={<DeleteOutlined />}
-                type="text"
-                danger
-                size="small"
-                loading={loading}
-                onClick={handleDelete}
-              />
-            </Tooltip>
-          </Space>
-        </div>
-      }
-    >
-      <div className={styles.content}>
-        <Descriptions
-          column={1}
-          size="small"
-          layout="vertical"
-          styles={{ label: { fontWeight: 500 } }}
-        >
-          <Descriptions.Item label="Secteur">{data.sector}</Descriptions.Item>
-          <Descriptions.Item label="Type de contact">
-            {data.client?.type || "—"}
-          </Descriptions.Item>
-          <Descriptions.Item label="Nom du contact">
-            {data.client?.name} {data.client?.name && `(${data.client?.function})`}
-          </Descriptions.Item>
-          <Descriptions.Item label="Qualification du projet">
-            {data.qualification || "Non précisé"}
-          </Descriptions.Item>
-          <Descriptions.Item label="Date du rendez-vous">
-            {data.rdvDate ? new Date(data.rdvDate).toLocaleDateString() : "—"}
-          </Descriptions.Item>
-          <Descriptions.Item label="Créée le">
-            {new Date(data.createdAt).toLocaleDateString()}
-          </Descriptions.Item>
-          <Descriptions.Item label="Créée par">{data.author}</Descriptions.Item>
-          <Descriptions.Item label="Visibilité">
-            <Tag color={visibilityColor[data.visibility]}>{data.visibility}</Tag>
-          </Descriptions.Item>
-        </Descriptions>
+      <Drawer
+        open={open}
+        onClose={onClose}
+        width={screens.md ? 700 : "100%"}
+        className={styles.drawer}
+        styles={{ body: { padding: 32 } }}
+        title={
+          <div className={styles.header}>
+            <div className={styles.headerLeft}>
+              <Typography.Title level={4} className={styles.title}>
+                {data.title}
+              </Typography.Title>
+              <div className={styles.subline}>
+                <Typography.Text type="secondary">
+                  {data.sector || "—"} • {data.client?.type || "—"}
+                </Typography.Text>
+              </div>
+            </div>
+            <Space>
+              <Tag color={visibilityColor[data.visibility]}>
+                {data.visibility}
+              </Tag>
+              <Tooltip title="Modifier">
+                <Button icon={<EditOutlined />} onClick={() => setEdit(true)} />
+              </Tooltip>
+              <Tooltip title="Archiver">
+                <Button
+                  icon={<DeleteOutlined />}
+                  type="text"
+                  danger
+                  loading={loading}
+                  onClick={handleDelete}
+                />
+              </Tooltip>
+            </Space>
+          </div>
+        }
+      >
+        <div className={styles.content}>
+          <Row gutter={[24, 16]}>
+            <Col xs={24} md={12}>
+              <Typography.Text type="secondary">
+                <ApartmentOutlined /> Secteur
+              </Typography.Text>
+              <div>{data.sector || "—"}</div>
+            </Col>
 
-        {data.summary && (
-          <>
-            <Divider />
-            <Typography.Paragraph className={styles.summary}>
-              {data.summary}
-            </Typography.Paragraph>
-          </>
-        )}
-      </div>
-    </Drawer>
-    <ContributionEditDrawer open={edit} onClose={() => setEdit(false)} id={data.id} />
+            <Col xs={24} md={12}>
+              <Typography.Text type="secondary">
+                <UserOutlined /> Contact
+              </Typography.Text>
+              <div>
+                {data.client?.name}{" "}
+                {data.client?.function && `(${data.client.function})`}
+              </div>
+            </Col>
+
+            <Col xs={24} md={12}>
+              <Typography.Text type="secondary">Qualification</Typography.Text>
+              <div>{data.qualification || "—"}</div>
+            </Col>
+
+            <Col xs={24} md={12}>
+              <Typography.Text type="secondary">
+                <CalendarOutlined /> Rendez-vous
+              </Typography.Text>
+              <div>
+                {data.rdvDate
+                  ? new Date(data.rdvDate).toLocaleDateString()
+                  : "—"}
+              </div>
+            </Col>
+
+            <Col xs={24} md={12}>
+              <Typography.Text type="secondary">Créé le</Typography.Text>
+              <div>{new Date(data.createdAt).toLocaleDateString()}</div>
+            </Col>
+
+            <Col xs={24} md={12}>
+              <Typography.Text type="secondary">Auteur</Typography.Text>
+              <div>{data.author}</div>
+            </Col>
+          </Row>
+
+          {data.summary && (
+            <>
+              <Divider className={styles.divider} />
+              <Typography.Title level={5}>Compte-rendu</Typography.Title>
+              <Typography.Paragraph className={styles.summary}>
+                {data.summary}
+              </Typography.Paragraph>
+            </>
+          )}
+        </div>
+      </Drawer>
+      {edit && (
+        <ContributionEditDrawer
+          open={edit}
+          onClose={() => setEdit(false)}
+          defaultValues={{
+            summary: data.summary,
+            projectQualification: data.qualification,
+            visibility: data.visibility,
+          }}
+          onSubmit={(updatedValues) => {
+            console.log("Mise à jour envoyée :", updatedValues);
+          }}
+        />
+      )}
     </>
   );
+}
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  data?: Contribution & {
+    contactName?: string;
+    contactRole?: string;
+    contactType?: string;
+    rdvDate?: string;
+    summary?: string;
+    qualification?: string;
+  };
 }
