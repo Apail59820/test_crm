@@ -13,6 +13,11 @@
   height: 100%;
   padding: 24px clamp(16px, 4vw, 64px);
   gap: 24px;
+  background-color: #fafafa;
+}
+
+.steps {
+  padding-bottom: 1rem;
 }
 
 /* ───────── Zone scrollable ───────── */

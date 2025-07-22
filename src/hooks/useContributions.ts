@@ -21,11 +21,35 @@ type DirectusContributionExpanded = Omit<
   status: Pick<ContributionsStatus, "label">;
 };
 
-export function useContributions(tab: "all" | "mine" | "public") {
+export function useContributions(
+  tab: "all" | "mine" | "public",
+  {
+    search,
+    sector,
+    visibility,
+    page = 1,
+    limit = 10,
+  }: {
+    search?: string;
+    sector?: string;
+    visibility?: string;
+    page?: number;
+    limit?: number;
+  } = {},
+) {
   const { user, loading } = useAuth();
 
   return useQuery({
-    queryKey: ["contributions", tab, user?.id],
+    queryKey: [
+      "contributions",
+      tab,
+      user?.id,
+      search,
+      sector,
+      visibility,
+      page,
+      limit,
+    ],
     queryFn: async () => {
       try {
         const filter: Record<string, unknown> = {};
@@ -34,6 +58,22 @@ export function useContributions(tab: "all" | "mine" | "public") {
           filter.is_public = { _eq: true };
         } else if (tab === "mine" && user) {
           filter.user_created = { _eq: user.id };
+        }
+
+        if (visibility) {
+          if (visibility === "ARCHIVED") {
+            filter["status.label"] = { _eq: "ARCHIVED" };
+          } else {
+            filter.is_public = { _eq: visibility === "PUBLIC" };
+          }
+        }
+
+        if (sector) {
+          filter["sector_activity"] = { _eq: sector };
+        }
+
+        if (search) {
+          filter["organization.name"] = { _icontains: search };
         }
 
         const items = await directus.request<DirectusContributionExpanded[]>(
@@ -49,6 +89,8 @@ export function useContributions(tab: "all" | "mine" | "public") {
             ],
             sort: "-date_created",
             filter,
+            limit,
+            page,
           }),
         );
 

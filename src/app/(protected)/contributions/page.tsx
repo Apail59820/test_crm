@@ -7,6 +7,9 @@ import styles from "./ContributionsPage.module.scss";
 
 import ContributionTabs from "@/components/ContributionTabs/ContributionTabs";
 import ContributionsList from "@/components/ContributionList/ContributionList";
+import ContributionsFilters, {
+  type Filters,
+} from "@/components/ContributionsFilters/ContributionsFilters";
 import ContributionDrawer from "@/components/ContributionDrawer/ContributionDrawer";
 import { PageHeader } from "@/components/PageHeader/PageHeader";
 import type { Contribution } from "@/types/contribution";
@@ -16,6 +19,8 @@ export default function ContributionsPage() {
   const [activeTab, setActiveTab] = useState<"all" | "mine" | "public">("all");
   const [selected, setSelected] = useState<Contribution | null>(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [filters, setFilters] = useState<Filters>({});
+  const [page, setPage] = useState(1);
 
   return (
     <div className={styles.container}>
@@ -27,12 +32,19 @@ export default function ContributionsPage() {
       <div className={styles.content}>
         <ContributionTabs
           activeTab={activeTab}
-          onChangeTab={setActiveTab}
+          onChangeTab={(tab) => { setPage(1); setActiveTab(tab); }}
           onCreate={() => setFormOpen(true)}
         />
 
+        <ContributionsFilters value={filters} onChange={(f) => { setPage(1); setFilters(f); }} />
         <div className={styles.listWrapper}>
-          <ContributionsList tab={activeTab} onSelect={setSelected} />
+          <ContributionsList
+            tab={activeTab}
+            filters={filters}
+            page={page}
+            onPageChange={setPage}
+            onSelect={setSelected}
+          />
         </div>
 
         <FloatButton
