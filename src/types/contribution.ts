@@ -7,4 +7,10 @@ export interface Contribution {
   author: string;
   visibility: Visibility;
   createdAt: string;
+  client?: {
+    name: string;
+    function?: string;
+    type?: string;
+  };
+  qualification?: string;
 }
