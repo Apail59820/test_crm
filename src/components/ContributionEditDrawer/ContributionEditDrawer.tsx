@@ -25,6 +25,7 @@ import styles from "./ContributionEditDrawer.module.scss";
 import { useProjectQualifs } from "@/hooks/useProjectQualifs";
 import { useUpdateContribution } from "@/hooks/useUpdateContribution";
 import { useContributionStatuses } from "@/hooks/useContributionStatuses";
+import { useContribution } from "@/hooks/useContribution";
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -87,6 +88,7 @@ export default function ContributionEditDrawer({
   const updateMutation = useUpdateContribution();
   const { data: projectQualifs = [] } = useProjectQualifs();
   const { data: statuses = [] } = useContributionStatuses();
+  const { data: contribution } = useContribution(open ? id : undefined);
 
   const editor = useEditor({
     extensions: [
@@ -98,25 +100,40 @@ export default function ContributionEditDrawer({
       Highlight,
       FontSize,
     ],
-    content: defaultValues?.summary || "",
+    content: "",
     editorProps: {
       attributes: { class: "tiptap-content" },
     },
   });
 
   useEffect(() => {
-    if (defaultValues && editor) {
-      editor.commands.setContent(defaultValues.summary || "");
+    if (!editor) return;
 
-      form.setFieldsValue({
-        ...defaultValues,
-        rdvDate: defaultValues.rdvDate ? dayjs(defaultValues.rdvDate) : null,
-        reminderDate: defaultValues.reminderDate
+    const summary = contribution?.notes_raw ?? defaultValues?.summary ?? "";
+    editor.commands.setContent(summary);
+
+    form.setFieldsValue({
+      projectQualification: contribution?.project_qualification?.id,
+      visibility:
+        contribution?.status?.label === "ARCHIVED"
+          ? "ARCHIVED"
+          : contribution
+            ? contribution.is_public
+              ? "PUBLIC"
+              : "PRIVATE"
+            : defaultValues?.visibility,
+      rdvDate: contribution?.meeting_date
+        ? dayjs(contribution.meeting_date)
+        : defaultValues?.rdvDate
+          ? dayjs(defaultValues.rdvDate)
+          : null,
+      reminderDate: contribution?.reminder_date
+        ? dayjs(contribution.reminder_date)
+        : defaultValues?.reminderDate
           ? dayjs(defaultValues.reminderDate)
           : null,
-      });
-    }
-  }, [defaultValues, editor, form]);
+    });
+  }, [contribution, defaultValues, editor, form]);
 
   const handleClose = () => {
     form.resetFields();
