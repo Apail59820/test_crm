@@ -166,15 +166,13 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
       </Drawer>
       {edit && (
         <ContributionEditDrawer
+          id={data.id}
           open={edit}
           onClose={() => setEdit(false)}
           defaultValues={{
             summary: data.summary,
             projectQualification: data.qualification,
             visibility: data.visibility,
-          }}
-          onSubmit={(updatedValues) => {
-            console.log("Mise à jour envoyée :", updatedValues);
           }}
         />
       )}

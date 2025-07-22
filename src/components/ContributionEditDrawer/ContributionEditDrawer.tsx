@@ -9,6 +9,7 @@ import {
   Space,
   Divider,
   DatePicker,
+  App,
 } from "antd";
 import {
   Star,
@@ -21,6 +22,10 @@ import { useEffect } from "react";
 import dayjs from "dayjs";
 import styles from "./ContributionEditDrawer.module.scss";
 
+import { useProjectQualifs } from "@/hooks/useProjectQualifs";
+import { useUpdateContribution } from "@/hooks/useUpdateContribution";
+import { useContributionStatuses } from "@/hooks/useContributionStatuses";
+
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -32,6 +37,7 @@ import { Extension } from "@tiptap/core";
 import TiptapMenuBar from "@/components/TipTapMenuBar/TipTapMenuBar";
 
 type Props = {
+  id: string;
   open: boolean;
   onClose: () => void;
   defaultValues?: {
@@ -64,17 +70,23 @@ const FontSize = Extension.create({
           },
         },
       },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any;
   },
 });
 
 export default function ContributionEditDrawer({
+  id,
   open,
   onClose,
   defaultValues,
   onSubmit,
 }: Props) {
   const [form] = Form.useForm();
+  const { message } = App.useApp();
+  const updateMutation = useUpdateContribution();
+  const { data: projectQualifs = [] } = useProjectQualifs();
+  const { data: statuses = [] } = useContributionStatuses();
 
   const editor = useEditor({
     extensions: [
@@ -115,13 +127,30 @@ export default function ContributionEditDrawer({
   const handleSave = async () => {
     await form.validateFields();
     const values = form.getFieldsValue();
-    onSubmit?.({
-      ...values,
-      summary: editor?.getHTML() || "",
-      rdvDate: values.rdvDate?.toISOString() || null,
-      reminderDate: values.reminderDate?.toISOString() || null,
-    });
-    handleClose();
+
+    const payload: Record<string, unknown> = {
+      notes_raw: editor?.getHTML() || "",
+      project_qualification: values.projectQualification || null,
+      meeting_date: values.rdvDate?.toISOString() || null,
+      reminder_date: values.reminderDate?.toISOString() || null,
+    };
+
+    if (values.visibility === "ARCHIVED") {
+      const archived = statuses?.find((s) => s.label === "ARCHIVED");
+      if (archived) payload.status = archived.id;
+    } else {
+      payload.is_public = values.visibility === "PUBLIC";
+      payload.status = null;
+    }
+
+    try {
+      await updateMutation.mutateAsync({ id, data: payload });
+      message.success("Contribution mise à jour !");
+      onSubmit?.(payload);
+      handleClose();
+    } catch {
+      message.error("Mise à jour impossible");
+    }
   };
 
   return (
@@ -131,6 +160,9 @@ export default function ContributionEditDrawer({
       width={520}
       className={styles.drawer}
       destroyOnClose
+      maskClosable={!updateMutation.isPending}
+      keyboard={!updateMutation.isPending}
+      closable={!updateMutation.isPending}
       title={
         <div className={styles.header}>
           <Typography.Title level={4} className={styles.title}>
@@ -166,7 +198,10 @@ export default function ContributionEditDrawer({
             </span>
           }
         >
-          <Select placeholder="Sélectionner une qualification…" />
+          <Select
+            placeholder="Sélectionner une qualification…"
+            options={projectQualifs.map((q) => ({ value: q.id, label: q.label }))}
+          />
         </Form.Item>
 
         <Form.Item
@@ -220,8 +255,15 @@ export default function ContributionEditDrawer({
         <Divider />
         <div className={styles.footer}>
           <Space>
-            <Button onClick={handleClose}>Annuler</Button>
-            <Button type="primary" onClick={handleSave}>
+            <Button onClick={handleClose} disabled={updateMutation.isPending}>
+              Annuler
+            </Button>
+            <Button
+              type="primary"
+              onClick={handleSave}
+              loading={updateMutation.isPending}
+              disabled={updateMutation.isPending}
+            >
               Enregistrer
             </Button>
           </Space>
