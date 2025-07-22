@@ -5,6 +5,7 @@ import { useContributions } from "@/hooks/useContributions";
 import type { Contribution } from "@/types/contribution";
 
 import ContributionCard from "@/components/ContributionCard/ContributionCard";
+import { useEffect } from "react";
 
 type Props = {
   tab: "all" | "mine" | "public";
@@ -12,8 +13,12 @@ type Props = {
 };
 
 export default function ContributionsList({ tab, onSelect }: Props) {
-  const { data } = useContributions(tab);
+  const { data, isLoading } = useContributions(tab);
 
+  useEffect(() => {
+    console.log(data);
+    console.log(isLoading);
+  }, [data, isLoading]);
   return (
     <List
       grid={{ gutter: 16, column: 1 }}

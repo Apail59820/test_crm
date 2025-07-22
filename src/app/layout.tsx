@@ -15,6 +15,8 @@ import { AuthProvider } from "@/lib/auth-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import CustomEmpty from "@/components/CustomEmpty/CustomEmpty";
 
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -53,6 +55,7 @@ export default function RootLayout({
             renderEmpty={() => <CustomEmpty />}
           >
             <QueryClientProvider client={queryClient}>
+              <ReactQueryDevtools initialIsOpen={false} />
               <App>
                 <AuthProvider>
                   {!hideTopBar && <TopBar />}
