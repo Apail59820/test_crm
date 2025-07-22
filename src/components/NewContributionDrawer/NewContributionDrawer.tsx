@@ -9,6 +9,7 @@ import {
   Space,
   Divider,
   App,
+  Input,
 } from "antd";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -28,20 +29,13 @@ import OrganizationSelector, {
   type OrganizationValue,
 } from "@/components/OrganizationSelector/OrganizationSelector";
 import { useCreateContribution } from "@/hooks/useCreateContribution";
+import { useSectors } from "@/hooks/useSectors";
+import { useOrigins } from "@/hooks/useOrigins";
+import { useContactQualifs } from "@/hooks/useContactQualifs";
+import { useProjectQualifs } from "@/hooks/useProjectQualifs";
 
 const { Step } = Steps;
 
-/* ────────────────────────────────────────────────────────── */
-/* Données fixes                                             */
-const sectors = [
-  "Promoteur",
-  "Constructeur",
-  "Architecte",
-  "Collectivités",
-  "Entreprises",
-  "Services",
-  "Autre",
-];
 
 type Props = {
   open: boolean;
@@ -89,6 +83,10 @@ export default function NewContributionDrawer({
   const [organization, setOrganization] = useState<OrganizationValue>();
   const { message } = App.useApp();
   const createMutation = useCreateContribution();
+  const { data: sectors = [] } = useSectors();
+  const { data: origins = [] } = useOrigins();
+  const { data: contactQualifs = [] } = useContactQualifs();
+  const { data: projectQualifs = [] } = useProjectQualifs();
 
   /* ────── TIPTAP EDITOR ────── */
   const editor = useEditor({
@@ -160,10 +158,17 @@ export default function NewContributionDrawer({
       organization: organization.id,
       organizationName: organization.name,
       sector: values.sector,
-      contactType: values.contactType,
-      qualification: values.qualification,
+      contactOrigin: values.contactOrigin,
+      contactQualification: values.contactQualification,
+      projectQualification: values.projectQualification,
       visibility: values.visibility,
       summary: editor?.getHTML() || "",
+      firstName: values.firstName,
+      lastName: values.lastName,
+      position: values.position,
+      email: values.email,
+      phone: values.phone,
+      region: values.region,
     });
 
     onSubmit?.({
@@ -228,38 +233,106 @@ export default function NewContributionDrawer({
                   />
                 </Form.Item>
 
-                  <Space direction="horizontal" size="large" wrap>
-                    <Form.Item
-                      preserve={false}
-                      label="Secteur d’activité"
-                      name="sector"
-                      rules={[{ required: true }]}
-                    >
-                      <Select
-                        placeholder="Choisir…"
-                        options={sectors.map((s) => ({ value: s, label: s }))}
-                        style={{ minWidth: 200 }}
-                      />
-                    </Form.Item>
+                <Space direction="horizontal" size="large" wrap>
+                  <Form.Item
+                    preserve={false}
+                    label="Secteur d’activité"
+                    name="sector"
+                    rules={[{ required: true }]}
+                  >
+                    <Select
+                      placeholder="Choisir…"
+                      options={sectors.map((s) => ({ value: s.id, label: s.label }))}
+                      style={{ minWidth: 200 }}
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      preserve={false}
-                      label="Type de contact"
-                      name="contactType"
-                      rules={[{ required: true }]}
-                    >
-                      <Select
-                        placeholder="Prospect, Client…"
-                        options={[
-                          "Prospect",
-                          "Client",
-                          "Partenaire",
-                          "Informateur",
-                        ].map((t) => ({ value: t, label: t }))}
-                        style={{ minWidth: 200 }}
-                      />
-                </Form.Item>
-              </Space>
+                  <Form.Item
+                    preserve={false}
+                    label="Origine du contact"
+                    name="contactOrigin"
+                    rules={[{ required: true }]}
+                  >
+                    <Select
+                      placeholder="Prospect, Client…"
+                      options={origins.map((o) => ({ value: o.id, label: o.label }))}
+                      style={{ minWidth: 200 }}
+                    />
+                  </Form.Item>
+                </Space>
+
+                <Space direction="horizontal" size="large" wrap>
+                  <Form.Item
+                    preserve={false}
+                    label="Prénom"
+                    name="firstName"
+                    rules={[{ required: true }]}
+                  >
+                    <Input style={{ minWidth: 160 }} />
+                  </Form.Item>
+
+                  <Form.Item
+                    preserve={false}
+                    label="Nom"
+                    name="lastName"
+                    rules={[{ required: true }]}
+                  >
+                    <Input style={{ minWidth: 160 }} />
+                  </Form.Item>
+                </Space>
+
+                <Space direction="horizontal" size="large" wrap>
+                  <Form.Item
+                    preserve={false}
+                    label="Fonction"
+                    name="position"
+                    rules={[{ required: true }]}
+                  >
+                    <Input style={{ minWidth: 160 }} />
+                  </Form.Item>
+
+                  <Form.Item
+                    preserve={false}
+                    label="Qualification"
+                    name="contactQualification"
+                    rules={[{ required: true }]}
+                  >
+                    <Select
+                      placeholder="Sélectionner…"
+                      options={contactQualifs.map((q) => ({ value: q.id, label: q.label }))}
+                      style={{ minWidth: 160 }}
+                    />
+                  </Form.Item>
+                </Space>
+
+                <Space direction="horizontal" size="large" wrap>
+                  <Form.Item
+                    preserve={false}
+                    label="Email"
+                    name="email"
+                    rules={[{ required: true, type: "email" }]}
+                  >
+                    <Input style={{ minWidth: 200 }} />
+                  </Form.Item>
+
+                  <Form.Item
+                    preserve={false}
+                    label="Téléphone"
+                    name="phone"
+                    rules={[{ required: true }]}
+                  >
+                    <Input style={{ minWidth: 160 }} />
+                  </Form.Item>
+
+                  <Form.Item
+                    preserve={false}
+                    label="Région"
+                    name="region"
+                    rules={[{ required: true }]}
+                  >
+                    <Input style={{ minWidth: 120 }} />
+                  </Form.Item>
+                </Space>
               </>
             )}
 
@@ -285,16 +358,10 @@ export default function NewContributionDrawer({
                   <Form.Item
                     preserve={false}
                     label="Qualification du projet"
-                    name="qualification"
+                    name="projectQualification"
                   >
                     <Select
-                      options={[
-                        "Information",
-                        "Projet à lancer (délai inconnu)",
-                        "Projet à lancer < 6 mois",
-                        "Projet lancé",
-                        "Projet terminé",
-                      ].map((q) => ({ value: q, label: q }))}
+                      options={projectQualifs.map((q) => ({ value: q.id, label: q.label }))}
                       placeholder="Sélectionner…"
                     />
                   </Form.Item>
