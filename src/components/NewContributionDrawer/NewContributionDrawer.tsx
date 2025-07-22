@@ -235,7 +235,6 @@ export default function NewContributionDrawer({
 
                 <Space direction="horizontal" size="large" wrap>
                   <Form.Item
-                    preserve={false}
                     label="Secteur d’activité"
                     name="sector"
                     rules={[{ required: true }]}
@@ -248,7 +247,6 @@ export default function NewContributionDrawer({
                   </Form.Item>
 
                   <Form.Item
-                    preserve={false}
                     label="Origine du contact"
                     name="contactOrigin"
                     rules={[{ required: true }]}
@@ -263,7 +261,6 @@ export default function NewContributionDrawer({
 
                 <Space direction="horizontal" size="large" wrap>
                   <Form.Item
-                    preserve={false}
                     label="Prénom"
                     name="firstName"
                     rules={[{ required: true }]}
@@ -272,7 +269,6 @@ export default function NewContributionDrawer({
                   </Form.Item>
 
                   <Form.Item
-                    preserve={false}
                     label="Nom"
                     name="lastName"
                     rules={[{ required: true }]}
@@ -283,7 +279,6 @@ export default function NewContributionDrawer({
 
                 <Space direction="horizontal" size="large" wrap>
                   <Form.Item
-                    preserve={false}
                     label="Fonction"
                     name="position"
                     rules={[{ required: true }]}
@@ -292,7 +287,6 @@ export default function NewContributionDrawer({
                   </Form.Item>
 
                   <Form.Item
-                    preserve={false}
                     label="Qualification"
                     name="contactQualification"
                     rules={[{ required: true }]}
@@ -307,7 +301,6 @@ export default function NewContributionDrawer({
 
                 <Space direction="horizontal" size="large" wrap>
                   <Form.Item
-                    preserve={false}
                     label="Email"
                     name="email"
                     rules={[{ required: true, type: "email" }]}
@@ -316,7 +309,6 @@ export default function NewContributionDrawer({
                   </Form.Item>
 
                   <Form.Item
-                    preserve={false}
                     label="Téléphone"
                     name="phone"
                     rules={[{ required: true }]}
@@ -325,7 +317,6 @@ export default function NewContributionDrawer({
                   </Form.Item>
 
                   <Form.Item
-                    preserve={false}
                     label="Région"
                     name="region"
                     rules={[{ required: true }]}
@@ -342,7 +333,6 @@ export default function NewContributionDrawer({
                 <TiptapMenuBar editor={editor} />
 
                   <Form.Item
-                    preserve={false}
                     label="Compte-rendu"
                     rules={[
                       { required: true, message: "Écrivez un compte-rendu" },
@@ -356,7 +346,6 @@ export default function NewContributionDrawer({
                   </Form.Item>
 
                   <Form.Item
-                    preserve={false}
                     label="Qualification du projet"
                     name="projectQualification"
                   >
@@ -374,7 +363,6 @@ export default function NewContributionDrawer({
                 <Divider />
                 <p className={styles.recapTitle}>Récapitulatif rapide</p>
                   <Form.Item
-                    preserve={false}
                     name="visibility"
                     label="Visibilité"
                   >
