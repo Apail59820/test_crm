@@ -148,7 +148,10 @@ export default function NewContributionDrawer({
   };
 
   const finish = async () => {
-    const values = await form.validateFields();
+    await form.validateFields();
+
+    const values = form.getFieldsValue(true);
+
     if (!organization) {
       message.error("Client requis");
       return;
