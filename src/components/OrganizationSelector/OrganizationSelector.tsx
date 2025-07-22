@@ -18,6 +18,13 @@ export default function OrganizationSelector({
   const [open, setOpen] = useState(false);
   const { data: options = [], isLoading } = useOrganizations(search);
 
+  const handleSearch = (val: string) => {
+    setSearch(val);
+    if (val) {
+      setOpen(true);
+    }
+  };
+
   const duplicate = search
     ? options.some((o) => o.name.toLowerCase() === search.toLowerCase())
     : false;
@@ -34,17 +41,24 @@ export default function OrganizationSelector({
               : { value: "", label: value.name }
             : undefined
         }
-        onSearch={setSearch}
+        onSearch={handleSearch}
         filterOption={false}
         notFoundContent={isLoading ? <Spin size="small" /> : null}
-        onChange={(val) =>
-          onChange?.({ id: val.value || undefined, name: val.label })
-        }
+        onChange={(val) => {
+          onChange?.({ id: val.value || undefined, name: val.label });
+          setOpen(false);
+          setSearch("");
+        }}
         options={options.map((o) => ({ value: o.id, label: o.name }))}
         style={{ width: "100%" }}
         placeholder="Rechercher ou créer…"
-        open={open || !!search}
-        onDropdownVisibleChange={setOpen}
+        open={open}
+        onDropdownVisibleChange={(visible) => {
+          setOpen(visible);
+          if (!visible) {
+            setSearch("");
+          }
+        }}
         popupRender={(menu) => (
           <>
             {menu}
@@ -54,7 +68,11 @@ export default function OrganizationSelector({
                 <div
                   style={{ padding: "8px", cursor: "pointer" }}
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => onChange?.({ name: search })}
+                  onClick={() => {
+                    onChange?.({ name: search });
+                    setOpen(false);
+                    setSearch("");
+                  }}
                 >
                   <PlusOutlined style={{ marginRight: 8 }} /> Créer &quot;{search}&quot;
                 </div>
