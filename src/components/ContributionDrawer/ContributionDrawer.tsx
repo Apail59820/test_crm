@@ -12,9 +12,12 @@ import {
 } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { readItems, updateItem } from "@directus/sdk";
 import styles from "./ContributionDrawer.module.scss";
 
 import type { Contribution, Visibility } from "@/types/contribution";
+import { directus } from "@/lib/directus";
+import ContributionEditDrawer from "@/components/ContributionEditDrawer/ContributionEditDrawer";
 
 type Props = {
   open: boolean;
@@ -37,13 +40,31 @@ const visibilityColor: Record<Visibility, string> = {
 
 export default function ContributionDrawer({ open, onClose, data }: Props) {
   const [loading, setLoading] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const handleDelete = () => {
+    if (!data) return;
     setLoading(true);
-    setTimeout(() => {
-      onClose();
-      setLoading(false);
-    }, 1000);
+    (async () => {
+      try {
+        const status = await directus.request<{ id: string }[]>(
+          readItems("contributions_status", {
+            fields: ["id"],
+            filter: { label: { _eq: "ARCHIVED" } },
+            limit: 1,
+          }),
+        );
+        const statusId = status[0]?.id;
+        await directus.request(
+          updateItem("contributions", data.id, { status: statusId }),
+        );
+        onClose();
+      } catch (err) {
+        console.error("archive error", err);
+      } finally {
+        setLoading(false);
+      }
+    })();
   };
 
   useEffect(() => {
@@ -53,6 +74,7 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
   if (!data) return <Drawer open={open} onClose={onClose} />;
 
   return (
+    <>
     <Drawer
       open={open}
       onClose={onClose}
@@ -70,7 +92,7 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
                 icon={<EditOutlined />}
                 type="default"
                 size="small"
-                onClick={() => console.log("open edit")}
+                onClick={() => setEdit(true)}
               />
             </Tooltip>
             <Tooltip title="Archiver">
@@ -126,5 +148,7 @@ export default function ContributionDrawer({ open, onClose, data }: Props) {
         )}
       </div>
     </Drawer>
+    <ContributionEditDrawer open={edit} onClose={() => setEdit(false)} id={data.id} />
+    </>
   );
 }
