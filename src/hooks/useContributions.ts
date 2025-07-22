@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { readItems } from "@directus/sdk";
 import type { Contribution } from "@/types/contribution";
 import { directus } from "@/lib/directus";
+import { useAuth } from "@/lib/auth-context";
 import type {
   Contribution as DirectusContribution,
   Organization,
@@ -20,10 +21,20 @@ type DirectusContributionExpanded = Omit<
   status: Pick<ContributionsStatus, "label">;
 };
 
-export function useContributions() {
+export function useContributions(tab: "all" | "mine" | "public") {
+  const { user, loading } = useAuth();
+
   return useQuery({
-    queryKey: ["contributions"],
+    queryKey: ["contributions", tab, user?.id],
     queryFn: async () => {
+      const filter: Record<string, unknown> = {};
+
+      if (tab === "public") {
+        filter.is_public = { _eq: true };
+      } else if (tab === "mine" && user) {
+        filter.user_created = { _eq: user.id };
+      }
+
       const items = await directus.request<DirectusContributionExpanded[]>(
         readItems("contributions", {
           fields: [
@@ -36,6 +47,7 @@ export function useContributions() {
             { status: ["label"] },
           ],
           sort: "-date_created",
+          filter: Object.keys(filter).length ? filter : undefined,
         }),
       );
 
@@ -63,6 +75,7 @@ export function useContributions() {
         createdAt: String(item.date_created),
       }));
     },
+    enabled: !loading && (tab !== "mine" || Boolean(user)),
     initialData: [] as Contribution[],
   });
 }
