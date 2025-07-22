@@ -80,6 +80,7 @@ export default function OrganizationSelector({
             )}
           </>
         )}
+        aria-errormessage={"Veuillez renseigner ce champs"}
       />
       {duplicate && (
         <Alert

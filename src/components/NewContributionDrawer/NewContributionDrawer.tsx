@@ -233,6 +233,7 @@ export default function NewContributionDrawer({
                       </span>
                     }
                     required
+                    rules={[{ required: true, message: "Veuillez renseigner ce champ" }]}
                   >
                     <OrganizationSelector
                       value={organization}
@@ -244,7 +245,7 @@ export default function NewContributionDrawer({
                     <Form.Item
                       label={<span><Landmark className={styles.icon} /> Secteur d’activité</span>}
                       name="sector"
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: "Veuillez renseigner ce champ" }]}
                     >
                       <Select
                         placeholder="Choisir…"
@@ -252,13 +253,14 @@ export default function NewContributionDrawer({
                           value: s.id,
                           label: s.label,
                         }))}
+                        aria-errormessage={"Veuillez renseigner ce champs"}
                       />
                     </Form.Item>
 
                     <Form.Item
                       label={<span><Network className={styles.icon} /> Origine du contact</span>}
                       name="contactOrigin"
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: "Veuillez renseigner ce champ" }]}
                     >
                       <Select
                         placeholder="Comment le contact a été initié"
@@ -266,6 +268,7 @@ export default function NewContributionDrawer({
                           value: o.id,
                           label: o.label,
                         }))}
+                        aria-errormessage={"Veuillez renseigner ce champs"}
                       />
                     </Form.Item>
                   </div>
@@ -277,31 +280,31 @@ export default function NewContributionDrawer({
                     <Form.Item
                       label={<span><User className={styles.icon} /> Prénom</span>}
                       name="firstName"
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: "Veuillez renseigner ce champ" }]}
                     >
-                      <Input />
+                      <Input aria-errormessage={"Veuillez renseigner ce champs"}/>
                     </Form.Item>
 
                     <Form.Item
                       label={<span><Users className={styles.icon} /> Nom</span>}
                       name="lastName"
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: "Veuillez renseigner ce champ" }]}
                     >
-                      <Input />
+                      <Input aria-errormessage={"Veuillez renseigner ce champs"}/>
                     </Form.Item>
 
                     <Form.Item
                       label={<span><Briefcase className={styles.icon} /> Fonction</span>}
                       name="position"
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: "Veuillez renseigner ce champ" }]}
                     >
-                      <Input />
+                      <Input aria-errormessage={"Veuillez renseigner ce champs"}/>
                     </Form.Item>
 
                     <Form.Item
                       label={<span><Star className={styles.icon} /> Qualification</span>}
                       name="contactQualification"
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: "Veuillez renseigner ce champ" }]}
                     >
                       <Select
                         placeholder="Niveau de qualification"
@@ -309,6 +312,7 @@ export default function NewContributionDrawer({
                           value: q.id,
                           label: q.label,
                         }))}
+                        aria-errormessage={"Veuillez renseigner ce champs"}
                       />
                     </Form.Item>
                   </div>
@@ -319,23 +323,23 @@ export default function NewContributionDrawer({
                       name="email"
                       rules={[{ required: true, type: "email" }]}
                     >
-                      <Input />
+                      <Input aria-errormessage={"Veuillez renseigner ce champs"}/>
                     </Form.Item>
 
                     <Form.Item
                       label={<span><Phone className={styles.icon} /> Téléphone</span>}
                       name="phone"
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: "Veuillez renseigner ce champ" }]}
                     >
-                      <Input />
+                      <Input aria-errormessage={"Veuillez renseigner ce champs"}/>
                     </Form.Item>
 
                     <Form.Item
                       label={<span><MapPin className={styles.icon} /> Région</span>}
                       name="region"
-                      rules={[{ required: true }]}
+                      rules={[{ required: true, message: "Veuillez renseigner ce champ" }]}
                     >
-                      <Input />
+                      <Input aria-errormessage={"Veuillez renseigner ce champs"}/>
                     </Form.Item>
                   </div>
                 </section>
@@ -367,6 +371,7 @@ export default function NewContributionDrawer({
                       label: q.label,
                     }))}
                     placeholder="Sélectionner…"
+                    aria-errormessage={"Veuillez renseigner ce champs"}
                   />
                 </Form.Item>
               </>
@@ -386,6 +391,7 @@ export default function NewContributionDrawer({
                       { value: "PRIVATE", label: "Privée" },
                     ]}
                     style={{ maxWidth: 200 }}
+                    aria-errormessage={"Veuillez renseigner ce champs"}
                   />
                 </Form.Item>
               </>
