@@ -8,7 +8,7 @@ import type {
   ContributionsStatus,
   DirectusUser,
   Organization,
-  Sector
+  Sector,
 } from "../../models/types";
 
 type DirectusContributionExpanded = Omit<
@@ -69,11 +69,11 @@ export function useContributions(
         }
 
         if (sector) {
-          filter["sector_activity"] = { _eq: sector };
+          filter["sector_activity"] = { label: { _eq: sector } };
         }
 
         if (search) {
-          filter["organization.name"] = { _icontains: search };
+          filter["organization"] = { name: { _icontains: search } };
         }
 
         const items = await directus.request<DirectusContributionExpanded[]>(
@@ -101,7 +101,9 @@ export function useContributions(
           author:
             [item.user_created?.first_name, item.user_created?.last_name]
               .filter(Boolean)
-              .join(" ") || item.user_created?.email || "",
+              .join(" ") ||
+            item.user_created?.email ||
+            "",
           visibility:
             item.status?.label === "ARCHIVED"
               ? "ARCHIVED"
@@ -118,5 +120,4 @@ export function useContributions(
     enabled: !loading && (tab !== "mine" || Boolean(user)),
     placeholderData: [] as Contribution[],
   });
-
 }
