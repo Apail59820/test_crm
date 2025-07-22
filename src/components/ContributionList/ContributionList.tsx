@@ -40,7 +40,7 @@ export default function ContributionsList({ tab, filters, page, onPageChange, on
           author={item.author}
           contactName={item?.client?.name}
           contactRole={item?.client?.function}
-          contactType={item?.client.type}
+          contactType={item?.client?.type}
           summary="Un projet de restructuration important sur le campus Est. À relancer en septembre."
           qualification={item?.qualification}
           rdvDate="2025-06-27"
