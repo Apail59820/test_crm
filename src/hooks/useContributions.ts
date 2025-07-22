@@ -4,10 +4,13 @@ import type { Contribution } from "@/types/contribution";
 import { directus } from "@/lib/directus";
 import { useAuth } from "@/lib/auth-context";
 import type {
+  Contact,
+  ContactQualif,
   Contribution as DirectusContribution,
   ContributionsStatus,
   DirectusUser,
   Organization,
+  ProjectQualif,
   Sector,
 } from "../../models/types";
 
@@ -82,6 +85,10 @@ export function useContributions(
               "id",
               "date_created",
               "is_public",
+              "contact_function",
+              { contact_qualification: ["label"] },
+              { project_qualification: ["label"] },
+              { contact: ["first_name", "last_name"] },
               { organization: ["name"] },
               { sector_activity: ["label"] },
               { user_created: ["first_name", "last_name", "email"] },
@@ -111,6 +118,12 @@ export function useContributions(
                 ? "PUBLIC"
                 : "PRIVATE",
           createdAt: String(item.date_created),
+          client: {
+            name: `${(item.contact as Contact)?.first_name} ${(item.contact as Contact)?.last_name}`,
+            function: item.contact_function,
+            type: (item.contact_qualification as ContactQualif)?.label,
+          },
+          qualification: (item.project_qualification as ProjectQualif)?.label,
         }));
       } catch (err) {
         console.error("💥 useContributions error:", err);
