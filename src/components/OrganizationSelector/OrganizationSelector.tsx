@@ -53,7 +53,7 @@ export default function OrganizationSelector({
         style={{ width: "100%" }}
         placeholder="Rechercher ou créer…"
         open={open}
-        onDropdownVisibleChange={(visible) => {
+        onOpenChange={(visible) => {
           setOpen(visible);
           if (!visible) {
             setSearch("");
