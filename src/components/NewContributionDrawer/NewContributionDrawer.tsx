@@ -255,7 +255,6 @@ export default function NewContributionDrawer({
                   <Form.Item
                     preserve={false}
                     label="Compte-rendu"
-                    name="summary"
                     rules={[
                       { required: true, message: "Écrivez un compte-rendu" },
                     ]}
