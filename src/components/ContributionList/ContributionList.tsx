@@ -12,18 +12,12 @@ type Props = {
 };
 
 export default function ContributionsList({ tab, onSelect }: Props) {
-  const { data } = useContributions();
-
-  const filtered = data.filter((item) => {
-    if (tab === "public") return item.visibility === "PUBLIC";
-    if (tab === "mine") return item.author === "Toi-même";
-    return true;
-  });
+  const { data } = useContributions(tab);
 
   return (
     <List
       grid={{ gutter: 16, column: 1 }}
-      dataSource={filtered}
+      dataSource={data}
       renderItem={(item) => (
         <ContributionCard
           key={item.id}
