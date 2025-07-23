@@ -1,3 +1,5 @@
+'use client'
+
 import { PageHeader } from "@/components/PageHeader/PageHeader";
 import styles from './NewsletterPage.module.scss'
 import NewsletterFilters, {

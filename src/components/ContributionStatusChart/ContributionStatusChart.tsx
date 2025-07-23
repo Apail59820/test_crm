@@ -18,6 +18,7 @@ import { StatCard } from "@/components/StatCard/StatCard";
 import styles from "./ContributionStatusChart.module.scss";
 import { useContributionStats } from "@/hooks/useContributionStats";
 import type { NewsletterFilterValues } from "@/components/NewsletterFilters/NewsletterFilters";
+import { useEffect } from "react";
 
 const COLORS = ["#4caf50", "#2196f3", "#ff9800", "#9c27b0", "#f44336"];
 
