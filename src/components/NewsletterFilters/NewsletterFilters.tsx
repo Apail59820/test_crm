@@ -14,9 +14,22 @@ dayjs.locale("fr");
 
 const { RangePicker } = DatePicker;
 
-export default function NewsletterFilters() {
+export type NewsletterFilterValues = {
+  range: [dayjs.Dayjs, dayjs.Dayjs];
+  users?: string[];
+  all?: boolean;
+};
+
+export default function NewsletterFilters({
+  onSearch,
+}: {
+  onSearch: (values: NewsletterFilterValues) => void;
+}) {
   const [form] = Form.useForm();
-  const defaultRange = [dayjs().subtract(7, "day"), dayjs()];
+  const defaultRange: [dayjs.Dayjs, dayjs.Dayjs] = [
+    dayjs().subtract(7, "day"),
+    dayjs(),
+  ];
   const [search, setSearch] = useState("");
   const { data: users = [], isLoading } = useUsers(search);
   const allContributors = Form.useWatch("all", form);
@@ -85,6 +98,10 @@ export default function NewsletterFilters() {
               icon={<Search size={16} />}
               className={styles.searchButton}
               size="middle"
+              onClick={() => {
+                const values = form.getFieldsValue();
+                onSearch(values as NewsletterFilterValues);
+              }}
             >
               Rechercher
             </Button>

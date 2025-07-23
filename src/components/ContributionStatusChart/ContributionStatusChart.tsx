@@ -16,28 +16,32 @@ import {
 } from "recharts";
 import { StatCard } from "@/components/StatCard/StatCard";
 import styles from "./ContributionStatusChart.module.scss";
+import { useContributionStats } from "@/hooks/useContributionStats";
+import type { NewsletterFilterValues } from "@/components/NewsletterFilters/NewsletterFilters";
 
-const COLORS = ["#4caf50", "#ff9800", "#f44336"];
+const COLORS = ["#4caf50", "#2196f3", "#ff9800", "#9c27b0", "#f44336"];
 
-const donutData = [
-  { name: "Publiques", value: 12 },
-  { name: "Privées", value: 8 },
-  { name: "Archivées", value: 5 },
-];
+export default function ContributionStatusChart({
+  filters,
+}: {
+  filters: NewsletterFilterValues | null;
+}) {
+  const { data } = useContributionStats({
+    startDate: filters?.range?.[0]?.toISOString(),
+    endDate: filters?.range?.[1]?.toISOString(),
+    userIds: filters && !filters.all ? filters.users : undefined,
+  });
 
-const barData = [
-  { name: "Semaine 27", Publiques: 8, Privées: 4, Archivées: 2 },
-  { name: "Semaine 28", Publiques: 10, Privées: 3, Archivées: 3 },
-  { name: "Semaine 29", Publiques: 12, Privées: 5, Archivées: 5 },
-];
+  const donutData = data?.donutData ?? [];
+  const lineData = data?.lineData ?? [];
+  const barData = data?.barData ?? [];
 
-const lineData = [
-  { semaine: "S27", total: 14 },
-  { semaine: "S28", total: 16 },
-  { semaine: "S29", total: 22 },
-];
+  const statusKeys = donutData.map((d) => d.name);
+  const colorMap = statusKeys.reduce<Record<string, string>>((acc, key, idx) => {
+    acc[key] = COLORS[idx % COLORS.length];
+    return acc;
+  }, {});
 
-export default function ContributionStatusChart() {
   return (
     <div className={styles.grid}>
       <StatCard
@@ -56,7 +60,7 @@ export default function ContributionStatusChart() {
                 label
               >
                 {donutData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell key={`cell-${index}`} fill={colorMap[entry.name]} />
                 ))}
               </Pie>
               <Tooltip />
@@ -71,7 +75,7 @@ export default function ContributionStatusChart() {
         content={
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={lineData}>
-              <XAxis dataKey="semaine" />
+              <XAxis dataKey="week" />
               <YAxis />
               <Tooltip />
               <Line type="monotone" dataKey="total" stroke="#3f51b5" strokeWidth={2} />
@@ -86,13 +90,13 @@ export default function ContributionStatusChart() {
         content={
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={barData}>
-              <XAxis dataKey="name" />
+              <XAxis dataKey="week" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="Publiques" fill="#4caf50" />
-              <Bar dataKey="Privées" fill="#ff9800" />
-              <Bar dataKey="Archivées" fill="#f44336" />
+              {statusKeys.map((key) => (
+                <Bar key={key} dataKey={key} fill={colorMap[key]} />
+              ))}
             </BarChart>
           </ResponsiveContainer>
         }
