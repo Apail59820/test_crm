@@ -3,6 +3,7 @@ import "antd/dist/reset.css";
 import "../styles/globals.scss";
 
 import AppProviders from "@/components/AppProviders/AppProviders";
+import React from "react";
 
 export default function RootLayout({
   children,
