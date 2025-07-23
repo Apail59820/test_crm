@@ -1,19 +1,25 @@
 "use client";
 
-import { DatePicker, Select, Button, Card, Form } from "antd";
+import { DatePicker, Select, Button, Card, Form, Checkbox, Spin, Empty } from "antd";
 import { motion } from "framer-motion";
 import { Calendar, UserRoundSearch, Search } from "lucide-react";
+import { useState } from "react";
 import styles from "./NewsletterFilters.module.scss";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
 import locale from "antd/es/date-picker/locale/fr_FR";
+import { useUsers } from "@/hooks/useUsers";
 
 dayjs.locale("fr");
 
 const { RangePicker } = DatePicker;
 
 export default function NewsletterFilters() {
+  const [form] = Form.useForm();
   const defaultRange = [dayjs().subtract(7, "day"), dayjs()];
+  const [search, setSearch] = useState("");
+  const { data: users = [], isLoading } = useUsers(search);
+  const allContributors = Form.useWatch("all", form);
 
   return (
     <motion.div
@@ -23,9 +29,15 @@ export default function NewsletterFilters() {
       transition={{ duration: 0.3 }}
     >
       <Card className={styles.card} variant={"borderless"}>
-        <Form layout="vertical" className={styles.form} initialValues={{
-          range: defaultRange,
-        }}>
+        <Form
+          form={form}
+          layout="vertical"
+          className={styles.form}
+          initialValues={{
+            range: defaultRange,
+            all: true,
+          }}
+        >
           <Form.Item
             label={
               <span className={styles.label}>
@@ -35,10 +47,7 @@ export default function NewsletterFilters() {
             }
             name="range"
           >
-            <RangePicker
-              className={styles.range}
-              locale={locale}
-            />
+            <RangePicker className={styles.range} locale={locale} />
           </Form.Item>
 
           <Form.Item
@@ -48,17 +57,26 @@ export default function NewsletterFilters() {
                 Contributeur
               </span>
             }
-            name="user"
+            name="users"
           >
             <Select
-              placeholder="Tous les contributeurs"
-              options={[
-                { value: "all", label: "Tous les contributeurs" },
-                { value: "user1", label: "Jean Dupont" },
-                { value: "user2", label: "Marie Leclerc" },
-              ]}
+              mode="multiple"
+              showSearch
+              placeholder="Sélectionner…"
               className={styles.select}
+              disabled={allContributors}
+              onSearch={setSearch}
+              filterOption={false}
+              notFoundContent={isLoading ? <Spin size="small" /> : <Empty description="Aucun résultat" />}
+              options={users.map((u) => ({
+                value: u.id,
+                label: [u.first_name, u.last_name].filter(Boolean).join(" ") || u.email,
+              }))}
             />
+          </Form.Item>
+
+          <Form.Item name="all" valuePropName="checked">
+            <Checkbox>Tous les contributeurs</Checkbox>
           </Form.Item>
 
           <Form.Item>
