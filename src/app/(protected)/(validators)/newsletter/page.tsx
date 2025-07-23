@@ -1,9 +1,16 @@
+'use client'
+
 import { PageHeader } from "@/components/PageHeader/PageHeader";
 import styles from './NewsletterPage.module.scss'
-import NewsletterFilters from "@/components/NewsletterFilters/NewsletterFilters";
+import NewsletterFilters, {
+  NewsletterFilterValues,
+} from "@/components/NewsletterFilters/NewsletterFilters";
 import ContributionStatusChart from "@/components/ContributionStatusChart/ContributionStatusChart";
+import { useState } from "react";
 
 export default function ValidatorPage() {
+  const [filters, setFilters] = useState<NewsletterFilterValues | null>(null);
+
   return (
     <div className={styles.container}>
       <PageHeader
@@ -11,8 +18,8 @@ export default function ValidatorPage() {
         subtitle="Centralisez et validez les informations avant diffusion"
       />
 
-      <NewsletterFilters/>
-      <ContributionStatusChart/>
+      <NewsletterFilters onSearch={setFilters} />
+      <ContributionStatusChart filters={filters} />
     </div>
-  )
+  );
 }
