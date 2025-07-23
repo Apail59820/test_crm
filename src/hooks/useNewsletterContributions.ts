@@ -42,8 +42,7 @@ export function useNewsletterContributions({
         filter.user_created = { _in: userIds };
       }
 
-      // Only fetch contributions awaiting validation
-      filter.status = { label: { _eq: "pending_validation" } };
+      filter.status = { id: { _eq: "pending_validation" } };
 
       const items = await directus.request<
         (Pick<DirectusContribution, "id" | "date_created" | "notes_raw" | "is_public" | "meeting_date"> & {

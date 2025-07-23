@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Typography, Tag, Space, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { DownloadOutlined } from "@ant-design/icons";
@@ -25,7 +25,14 @@ export default function ContributionTable({
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   useEffect(() => {
-    setSelectedRowKeys(data.map((d) => d.id));
+    const newKeys = data.map((d) => d.id);
+    const isSame =
+      newKeys.length === selectedRowKeys.length &&
+      newKeys.every((k, i) => k === selectedRowKeys[i]);
+
+    if (!isSame) {
+      setSelectedRowKeys(newKeys);
+    }
   }, [data]);
 
   const columns: ColumnsType<Contribution> = [
