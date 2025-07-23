@@ -21,7 +21,7 @@ export default function ValidatorPage() {
 
       <NewsletterFilters onSearch={setFilters} />
       <ContributionStatusChart filters={filters} />
-      <ContributionTable/>
+      <ContributionTable filters={filters} />
     </div>
   );
 }
