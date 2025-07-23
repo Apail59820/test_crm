@@ -33,7 +33,7 @@ export default function ContributionTable({
     if (!isSame) {
       setSelectedRowKeys(newKeys);
     }
-  }, [data]);
+  }, [data, selectedRowKeys]);
 
   const columns: ColumnsType<Contribution> = [
     {
