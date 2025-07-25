@@ -53,6 +53,16 @@ Pour générer la version de production :
 npm run build
 ```
 
+## Tests
+
+Les tests unitaires utilisent **Vitest** et **Testing Library**. Pour les exécuter :
+
+```bash
+npm test
+```
+
+Un rapport de couverture est généré dans le dossier `coverage/`.
+
 ## Licence
 
 Projet fourni à titre d'exemple pédagogique.
