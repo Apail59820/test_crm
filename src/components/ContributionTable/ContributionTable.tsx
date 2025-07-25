@@ -23,17 +23,15 @@ export default function ContributionTable({
   });
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
   useEffect(() => {
-    const newKeys = data.map((d) => d.id);
-    const isSame =
-      newKeys.length === selectedRowKeys.length &&
-      newKeys.every((k, i) => k === selectedRowKeys[i]);
-
-    if (!isSame) {
+    if (!hasAutoSelected && data.length > 0) {
+      const newKeys = data.map((d) => d.id);
       setSelectedRowKeys(newKeys);
+      setHasAutoSelected(true);
     }
-  }, [data, selectedRowKeys]);
+  }, [data, hasAutoSelected]);
 
   const columns: ColumnsType<Contribution> = [
     {
