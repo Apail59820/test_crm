@@ -1,47 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { Card, Typography, DatePicker, Select, Button, List, Space, Divider, Tag } from "antd";
+import { Card, Typography, DatePicker, Select, Button, Space, Divider, Tag, Spin, Empty } from "antd";
 import { FilePdfOutlined, FileWordOutlined, MailOutlined } from "@ant-design/icons";
 import { Dayjs } from "dayjs";
+import { useNewsletterContributions } from "@/hooks/useNewsletterContributions";
 import styles from "./NewsletterBuilder.module.scss";
 
 const { RangePicker } = DatePicker;
 
-type MockContribution = {
-  id: string;
-  organization: string;
-  contributor: string;
-  region: string;
-  date: string;
-  visibility: "PUBLIC" | "PRIVATE" | "ARCHIVED";
-  summary: string;
-};
-
-const mockData: MockContribution[] = [
-  {
-    id: "1",
-    organization: "EDF Lyon",
-    contributor: "Chloé Lemoine",
-    region: "Rhône-Alpes",
-    date: "2025-07-18",
-    visibility: "PUBLIC",
-    summary: "Rencontre avec le directeur régional pour explorer une collaboration sur les projets à venir dans le bâtiment bas carbone.",
-  },
-  {
-    id: "2",
-    organization: "Ville de Lille",
-    contributor: "Amaury Noël",
-    region: "Hauts-de-France",
-    date: "2025-07-20",
-    visibility: "PRIVATE",
-    summary: "Échange autour du programme de rénovation urbaine avec l’équipe municipale.",
-  },
-];
 
 export default function NewsletterBuilder() {
   const [range, setRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [exportType, setExportType] = useState<"pdf" | "word" | "email">("pdf");
+
+  const { data = [], isLoading } = useNewsletterContributions({
+    startDate: range?.[0]?.toISOString(),
+    endDate: range?.[1]?.toISOString(),
+    enabled: Boolean(range),
+  });
 
   const tagColor = (v: string) => {
     return v === "PUBLIC" ? "green" : v === "PRIVATE" ? "orange" : "red";
@@ -85,27 +62,32 @@ export default function NewsletterBuilder() {
       <Typography.Title level={5}>Aperçu des contributions à inclure</Typography.Title>
 
       <div className={styles.previewContainer}>
-        {mockData.map((item) => (
-          <div className={styles.previewRow} key={item.id}>
-            <div className={styles.previewMeta}>
-              <Typography.Text strong className={styles.org}>
-                {item.organization}
-              </Typography.Text>
-              <Typography.Text type="secondary" className={styles.meta}>
-                {item.contributor} — {item.region}
-              </Typography.Text>
-              <Tag color={tagColor(item.visibility)} className={styles.tag}>
-                {item.visibility}
-              </Tag>
-            </div>
+        {isLoading && <Spin />}
+        {!isLoading && data.length === 0 && (
+          <Empty description="Aucune contribution" />
+        )}
+        {!isLoading &&
+          data.map((item) => (
+            <div className={styles.previewRow} key={item.id}>
+              <div className={styles.previewMeta}>
+                <Typography.Text strong className={styles.org}>
+                  {item.organization}
+                </Typography.Text>
+                <Typography.Text type="secondary" className={styles.meta}>
+                  {item.contributor} — {item.region}
+                </Typography.Text>
+                <Tag color={tagColor(item.visibility)} className={styles.tag}>
+                  {item.visibility}
+                </Tag>
+              </div>
 
-            <div className={styles.previewSummary}>
-              <Typography.Text ellipsis={{ tooltip: item.summary }}>
-                {item.summary}
-              </Typography.Text>
+              <div className={styles.previewSummary}>
+                <Typography.Text ellipsis={{ tooltip: item.summary }}>
+                  {item.summary}
+                </Typography.Text>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       <div className={styles.footer}>
