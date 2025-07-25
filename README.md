@@ -1,6 +1,6 @@
 # Projex CRM – Module Newsletter
 
-Ce projet est un mini CRM interne permettant de centraliser les contributions commerciales du groupe Projex.
+Ce projet est un mini CRM interne permettant de centraliser les contributions commerciales.
 Il est construit avec **Next.js 15** et **React 19** et s'appuie sur **Ant Design 5** pour l'interface.
 
 ## Fonctionnalités principales
@@ -32,6 +32,7 @@ Il est construit avec **Next.js 15** et **React 19** et s'appuie sur **Ant Desig
   - `NEXT_PUBLIC_DIRECTUS_URL` – URL de l'API Directus
   - `NEXT_PUBLIC_ADMIN_ROLE_ID` – identifiant du rôle administrateur
   - `NEXT_PUBLIC_VALIDATOR_ROLE_ID` – identifiant du rôle validateur
+  - `NEXT_PUBLIC_CONTRIBUTOR_ROLE_ID` - identifiant du rôle contributeur
 
 ## Installation et lancement
 
