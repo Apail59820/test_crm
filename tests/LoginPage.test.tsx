@@ -16,7 +16,7 @@ vi.mock('next/navigation', () => ({
 // mock AntD App context
 vi.mock('antd', async (importOriginal) => {
   const antd: never = await importOriginal();
-  
+
   return {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error

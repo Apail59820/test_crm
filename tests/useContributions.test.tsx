@@ -38,7 +38,7 @@ describe('useContributions', () => {
     await waitFor(() => expect(mockedRequest).toHaveBeenCalled());
     await waitFor(() => expect(result.current.data?.length).toBeGreaterThan(0));
 
-    expect(result.current?.data[0]).toMatchObject({
+    expect(result.current?.data?.[0]).toMatchObject({
       id: '1',
       title: 'ACME',
       sector: 'Tech',
