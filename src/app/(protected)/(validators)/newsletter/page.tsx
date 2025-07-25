@@ -8,6 +8,7 @@ import NewsletterFilters, {
 import ContributionStatusChart from "@/components/ContributionStatusChart/ContributionStatusChart";
 import { useState } from "react";
 import ContributionTable from "@/components/ContributionTable/ContributionTable";
+import ParticipationStatsSection from "@/components/ParticipationStatsSection/ParticipationStatsSection";
 
 export default function ValidatorPage() {
   const [filters, setFilters] = useState<NewsletterFilterValues | null>(null);
@@ -22,6 +23,7 @@ export default function ValidatorPage() {
       <NewsletterFilters onSearch={setFilters} />
       <ContributionStatusChart filters={filters} />
       <ContributionTable filters={filters} />
+      <ParticipationStatsSection/>
     </div>
   );
 }

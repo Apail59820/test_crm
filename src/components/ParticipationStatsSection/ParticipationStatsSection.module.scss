@@ -1,0 +1,40 @@
+.card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 16px;
+  background-color: #fff;
+}
+
+.table {
+  .ant-table-thead > tr > th {
+    background-color: #fafafa;
+    font-weight: 500;
+  }
+
+  .ant-table-tbody > tr:hover > td {
+    background-color: #f5f5f5;
+    transition: background-color 0.2s ease;
+  }
+
+  .ant-tag {
+    font-size: 13px;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+}
+
+.entity {
+  font-size: 12px;
+  color: var(--color-text-secondary, #888);
+}
+
+.infoIcon {
+  font-size: 16px;
+  color: var(--color-primary, #1890ff);
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #40a9ff;
+  }
+}
