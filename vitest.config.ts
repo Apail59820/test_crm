@@ -10,5 +10,9 @@ export default defineConfig({
     globals: true,
     css: true,
     envPrefix: 'NEXT_PUBLIC_',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html']
+    },
   },
 });
