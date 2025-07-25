@@ -98,13 +98,13 @@
 
 .previewSummary {
   flex: 1;
+  max-width: 100%;
   font-size: 14px;
   color: #444;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
 @media (max-width: 768px) {
   .previewRow {
     flex-direction: column;

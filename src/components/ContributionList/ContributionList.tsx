@@ -6,6 +6,7 @@ import type { Contribution } from "@/types/contribution";
 import type { Filters } from "@/components/ContributionsFilters/ContributionsFilters";
 
 import ContributionCard from "@/components/ContributionCard/ContributionCard";
+import { useEffect } from "react";
 
 type Props = {
   tab: "all" | "mine" | "public";
@@ -37,7 +38,7 @@ export default function ContributionsList({ tab, filters, page, onPageChange, on
           contactName={item?.client?.name}
           contactRole={item?.client?.function}
           contactType={item?.client?.type}
-          summary="Un projet de restructuration important sur le campus Est. À relancer en septembre."
+          summary={item?.summary}
           qualification={item?.qualification}
           rdvDate="2025-06-27"
           createdAt={item.createdAt}
