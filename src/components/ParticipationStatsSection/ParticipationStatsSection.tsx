@@ -1,6 +1,6 @@
 "use client";
 
-import { Table, Card, Typography, Tag, Space, Avatar, Tooltip } from "antd";
+import { Table, Card, Typography, Tag, Space, Avatar, Tooltip, DatePicker, Checkbox } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
   CheckCircleOutlined,
@@ -8,58 +8,26 @@ import {
   InfoCircleOutlined,
 } from "@ant-design/icons";
 import styles from "./ParticipationStatsSection.module.scss";
-
-import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import locale from "antd/es/date-picker/locale/fr_FR";
+import { useState } from "react";
+import { useParticipationStats, type ParticipationStat } from "@/hooks/useParticipationStats";
 
 const { RangePicker } = DatePicker;
 
-interface ContributorStats {
-  id: string;
-  name: string;
-  avatar?: string;
-  entity: string;
-  region: string;
-  hasContributed: boolean;
-  contributionCount: number;
-  lastContribution?: string;
-}
-
-const mockData: ContributorStats[] = [
-  {
-    id: "1",
-    name: "Amaury Paillart",
-    avatar: "https://i.pravatar.cc/150?img=1",
-    entity: "Projex Lille",
-    region: "Hauts-de-France",
-    hasContributed: true,
-    contributionCount: 3,
-    lastContribution: "2025-07-23",
-  },
-  {
-    id: "2",
-    name: "Julie Martin",
-    avatar: "https://i.pravatar.cc/150?img=2",
-    entity: "Projex Lyon",
-    region: "Auvergne-Rhône-Alpes",
-    hasContributed: false,
-    contributionCount: 0,
-  },
-  {
-    id: "3",
-    name: "Romain Lefebvre",
-    avatar: "https://i.pravatar.cc/150?img=3",
-    entity: "Projex Paris",
-    region: "Île-de-France",
-    hasContributed: true,
-    contributionCount: 1,
-    lastContribution: "2025-07-22",
-  },
-];
-
 export default function ParticipationStatsSection() {
-  const columns: ColumnsType<ContributorStats> = [
+  const [range, setRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs().subtract(7, "day"),
+    dayjs(),
+  ]);
+  const [allTime, setAllTime] = useState(false);
+
+  const { data = [] } = useParticipationStats({
+    startDate: allTime ? undefined : range[0]?.toISOString(),
+    endDate: allTime ? undefined : range[1]?.toISOString(),
+  });
+
+  const columns: ColumnsType<ParticipationStat> = [
     {
       title: "Contributeur",
       dataIndex: "name",
@@ -69,7 +37,7 @@ export default function ParticipationStatsSection() {
           <Avatar src={record.avatar} alt={text} />
           <div>
             <Typography.Text strong>{text}</Typography.Text>
-            <div className={styles.entity}>{record.entity}</div>
+            {record.entity && <div className={styles.entity}>{record.entity}</div>}
           </div>
         </Space>
       ),
@@ -109,9 +77,7 @@ export default function ParticipationStatsSection() {
       responsive: ["lg"],
       render: (date) =>
         date ? (
-          <Typography.Text>
-            {new Date(date).toLocaleDateString("fr-FR")}
-          </Typography.Text>
+          <Typography.Text>{new Date(date).toLocaleDateString("fr-FR")}</Typography.Text>
         ) : (
           <Typography.Text type="secondary">—</Typography.Text>
         ),
@@ -134,24 +100,29 @@ export default function ParticipationStatsSection() {
     <Card className={styles.card} title="Statistiques de participation">
       <div className={styles.header}>
         <Typography.Paragraph type="secondary" style={{ marginBottom: 16 }}>
-          Suivi des contributeurs pour la période sélectionnée. Données mises à
-          jour en temps réel.
+          Suivi des contributeurs pour la période sélectionnée. Données mises à jour en temps réel.
         </Typography.Paragraph>
-        <RangePicker
-          locale={locale}
-          format="DD/MM/YYYY"
-          allowClear={false}
-          style={{ borderRadius: 6 }}
-          className={styles.rangePicker}
-          value={[dayjs().subtract(7, "day"), dayjs()]}
-          onChange={() => {
-            /* no-op for now */
-          }}
-        />
+        <Space>
+          <Checkbox checked={allTime} onChange={(e) => setAllTime(e.target.checked)}>
+            Tout le temps
+          </Checkbox>
+          <RangePicker
+            locale={locale}
+            format="DD/MM/YYYY"
+            allowClear={false}
+            disabled={allTime}
+            style={{ borderRadius: 6 }}
+            className={styles.rangePicker}
+            value={range}
+            onChange={(values) => {
+              if (values) setRange(values as [dayjs.Dayjs, dayjs.Dayjs]);
+            }}
+          />
+        </Space>
       </div>
       <Table
         columns={columns}
-        dataSource={mockData}
+        dataSource={data}
         rowKey="id"
         pagination={false}
         className={styles.table}
