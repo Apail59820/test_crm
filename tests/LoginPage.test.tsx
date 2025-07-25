@@ -15,9 +15,12 @@ vi.mock('next/navigation', () => ({
 
 // mock AntD App context
 vi.mock('antd', async (importOriginal) => {
-  const antd = await importOriginal();
+  const antd: never = await importOriginal();
+  
   return {
-    ...antd,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    ...(antd),
     App: {
       useApp: vi.fn()
     }
@@ -34,9 +37,9 @@ describe('LoginPage', () => {
     const auth = vi.mocked(authModule.useAuth);
     const router = vi.mocked(routerModule.useRouter);
     const useApp = vi.mocked(App.useApp);
-    auth.mockReturnValue({ login } as any);
-    router.mockReturnValue({ replace } as any);
-    useApp.mockReturnValue({ message: { success, error: vi.fn() } } as any);
+    auth.mockReturnValue({ login } as never);
+    router.mockReturnValue({ replace } as never);
+    useApp.mockReturnValue({ message: { success, error: vi.fn() } } as never);
 
     render(<LoginPage />);
     await userEvent.type(screen.getByPlaceholderText('Adresse email'), 'jane@doe.com');
@@ -55,8 +58,8 @@ describe('LoginPage', () => {
 
     const auth = vi.mocked(authModule.useAuth);
     const useApp = vi.mocked(App.useApp);
-    auth.mockReturnValue({ login } as any);
-    useApp.mockReturnValue({ message: { success: vi.fn(), error } } as any);
+    auth.mockReturnValue({ login } as never);
+    useApp.mockReturnValue({ message: { success: vi.fn(), error } } as never);
 
     render(<LoginPage />);
     await userEvent.type(screen.getByPlaceholderText('Adresse email'), 'bad@user');

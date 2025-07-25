@@ -36,9 +36,9 @@ describe('useContributions', () => {
     const { result } = renderHook(() => useContributions('all'));
 
     await waitFor(() => expect(mockedRequest).toHaveBeenCalled());
-    await waitFor(() => expect(result.current.data.length).toBeGreaterThan(0));
+    await waitFor(() => expect(result.current.data?.length).toBeGreaterThan(0));
 
-    expect(result.current.data[0]).toMatchObject({
+    expect(result.current?.data[0]).toMatchObject({
       id: '1',
       title: 'ACME',
       sector: 'Tech',
