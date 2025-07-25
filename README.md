@@ -53,6 +53,10 @@ Pour générer la version de production :
 npm run build
 ```
 
+## Tests
+
+Des conseils détaillés sur la configuration de Vitest ou Jest, l'utilisation de Testing Library et la mise en place de MSW sont disponibles dans [TESTING_GUIDE.md](./TESTING_GUIDE.md).
+
 ## Licence
 
 Projet fourni à titre d'exemple pédagogique.
