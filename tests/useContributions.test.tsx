@@ -28,10 +28,10 @@ describe('useContributions', () => {
   /** Ensure raw API data is converted to the expected domain format */
   it('maps API data to domain model', async () => {
     // mock API
-    const mockedRequest = vi.mocked(directus.request as any);
+    const mockedRequest = vi.mocked(directus.request as never);
     const mockedUseAuth = vi.mocked(useAuth);
     mockedRequest.mockResolvedValue([apiContribution]);
-    mockedUseAuth.mockReturnValue({ user: mockUser, loading: false } as any);
+    mockedUseAuth.mockReturnValue({ user: mockUser, loading: false } as never);
 
     const { result } = renderHook(() => useContributions('all'));
 
