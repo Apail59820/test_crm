@@ -93,6 +93,7 @@ export function useContributions(
               { sector_activity: ["label"] },
               { user_created: ["first_name", "last_name", "email"] },
               { status: ["label"] },
+              "summary"
             ],
             sort: "-date_created",
             filter,
@@ -124,6 +125,7 @@ export function useContributions(
             type: (item.contact_qualification as ContactQualif)?.label,
           },
           qualification: (item.project_qualification as ProjectQualif)?.label,
+          summary: item.summary ?? "",
         }));
       } catch (err) {
         console.error("💥 useContributions error:", err);

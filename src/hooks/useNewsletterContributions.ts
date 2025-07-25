@@ -24,10 +24,12 @@ export function useNewsletterContributions({
   startDate,
   endDate,
   userIds,
+  enabled = true,
 }: {
   startDate?: string;
   endDate?: string;
   userIds?: string[];
+  enabled?: boolean;
 }) {
   return useQuery({
     queryKey: ["newsletter_contributions", startDate, endDate, userIds],
@@ -89,5 +91,6 @@ export function useNewsletterContributions({
         status: item.status?.label ?? "",
       }));
     },
+    enabled,
   });
 }

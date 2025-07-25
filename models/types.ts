@@ -46,6 +46,7 @@ export interface Contribution {
   contact_origin: string | Origin;
   project_qualification: string | ProjectQualif;
   status: string | ContributionsStatus;
+  summary: string;
 }
 
 export interface ContributionsStatus {

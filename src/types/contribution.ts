@@ -13,4 +13,5 @@ export interface Contribution {
     type?: string;
   };
   qualification?: string;
+  summary?: string;
 }
