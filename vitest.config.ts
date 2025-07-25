@@ -9,7 +9,6 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     globals: true,
     css: true,
-    envPrefix: 'NEXT_PUBLIC_',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html']

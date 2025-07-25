@@ -122,6 +122,8 @@ export interface DirectusUser {
   theme_light_overrides: string;
   theme_dark_overrides: string;
   policies: string;
+  region: string;
+  entity: string;
 }
 
 export interface DirectusFile {
