@@ -2,8 +2,18 @@
 
 import { Table, Card, Typography, Tag, Space, Avatar, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { CheckCircleOutlined, CloseCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
 import styles from "./ParticipationStatsSection.module.scss";
+
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+import locale from "antd/es/date-picker/locale/fr_FR";
+
+const { RangePicker } = DatePicker;
 
 interface ContributorStats {
   id: string;
@@ -99,7 +109,9 @@ export default function ParticipationStatsSection() {
       responsive: ["lg"],
       render: (date) =>
         date ? (
-          <Typography.Text>{new Date(date).toLocaleDateString("fr-FR")}</Typography.Text>
+          <Typography.Text>
+            {new Date(date).toLocaleDateString("fr-FR")}
+          </Typography.Text>
         ) : (
           <Typography.Text type="secondary">—</Typography.Text>
         ),
@@ -120,9 +132,23 @@ export default function ParticipationStatsSection() {
 
   return (
     <Card className={styles.card} title="Statistiques de participation">
-      <Typography.Paragraph type="secondary" style={{ marginBottom: 16 }}>
-        Suivi des contributeurs pour la période sélectionnée. Données mises à jour en temps réel.
-      </Typography.Paragraph>
+      <div className={styles.header}>
+        <Typography.Paragraph type="secondary" style={{ marginBottom: 16 }}>
+          Suivi des contributeurs pour la période sélectionnée. Données mises à
+          jour en temps réel.
+        </Typography.Paragraph>
+        <RangePicker
+          locale={locale}
+          format="DD/MM/YYYY"
+          allowClear={false}
+          style={{ borderRadius: 6 }}
+          className={styles.rangePicker}
+          value={[dayjs().subtract(7, "day"), dayjs()]}
+          onChange={() => {
+            /* no-op for now */
+          }}
+        />
+      </div>
       <Table
         columns={columns}
         dataSource={mockData}

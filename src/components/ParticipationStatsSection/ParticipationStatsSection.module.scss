@@ -5,6 +5,23 @@
   background-color: #fff;
 }
 
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  @media (min-width: 576px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.rangePicker {
+  max-width: 300px;
+}
+
 .table {
   .ant-table-thead > tr > th {
     background-color: #fafafa;
